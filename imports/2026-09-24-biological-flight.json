@@ -1,0 +1,20 @@
+{
+  "schema": "mosquito-drone-lab/source-recovery@1",
+  "date": "2026-09-24",
+  "repository": "pli-poc/drone-simulation",
+  "baseCommit": "cbeaadc9dbcfcc9f0a1ec954ae8619f214f34421",
+  "originalCommits": [
+    "9990091779acbce3aabbc5ffd485979bb90bcf50",
+    "1b7c744fab4fb2ca45ec3355396bcdfc24385c9f",
+    "b270303f6ed608974ece6a7a1fe7caeb0cc3ee87"
+  ],
+  "originalCommitIdentitiesPreserved": true,
+  "sourceTree": "7b2dd86b664d237059f4f2971e173bab7d51222d",
+  "verificationPatchSha256": "d3481261f709cc9a268089e8da2bbaac00a0e65eb0538f56efb0d806e2aadf33",
+  "recoveryWorkflow": "https://github.com/pli-poc/drone-simulation/actions/runs/36053524794",
+  "recoveryResult": "success",
+  "importBranch": "ops/import-biological-flight",
+  "applicationBranch": "feat/biological-flight",
+  "pullRequest": "https://github.com/pli-poc/drone-simulation/pull/4",
+  "notes": "Original saved source and local evidence recovered byte-for-byte. Recovery tooling stays on the isolated import branch and is not in the application PR. Recovery is not a browser test or deployment result; CI and publication records are tracked separately."
+}
