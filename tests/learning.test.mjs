@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {Network,Learner,INPUTS} from '../src/learning/dqn.js';
+import {Environment} from '../src/core/environment.js';
+test('network has seven finite action values and validates observations',()=>{const n=new Network();assert.equal(n.forward(Array(INPUTS).fill(0)).q.length,7);assert.throws(()=>n.forward([1]));assert.throws(()=>n.forward(Array(INPUTS).fill(NaN)));});
+test('checkpoint round trip preserves policy exactly',()=>{const a=new Network(10),b=new Network(99).load(JSON.parse(JSON.stringify(a.checkpoint()))),x=new Environment().observation();assert.deepEqual(a.forward(x),b.forward(x));});
+test('untrusted model imports reject shape, schema, nonfinite and extreme weights',()=>{const n=new Network();for(const mutate of [c=>c.schema='other',c=>c.weights.w1.pop(),c=>c.weights.w1[0]=null,c=>c.weights.w1[0]=Infinity,c=>c.weights.w1[0]=101,c=>c.dimensions=[19,32,7]]){const c=n.checkpoint();mutate(c);assert.throws(()=>n.load(c));}});
+test('failed import leaves previous model unchanged',()=>{const n=new Network(),before=n.checkpoint(),bad=n.checkpoint();bad.weights.b2[0]=NaN;assert.throws(()=>n.load(bad));assert.deepEqual(n.checkpoint(),before);});
+test('learning performs real weight updates, with finite loss',()=>{const l=new Learner(42),before=l.net.checkpoint();for(let i=0;i<128;i++){const state=Array(19).fill(0.2);l.remember(state,1,1,state,false);}assert.ok(l.updates>0);assert.ok(Number.isFinite(l.loss));assert.notDeepEqual(l.net.checkpoint().weights,before.weights);});
+test('identical training inputs reproduce identical weights',()=>{const a=new Learner(3),b=new Learner(3),x=Array(19).fill(0.3);for(let i=0;i<100;i++){a.remember(x,i%7,0.1,x,false);b.remember(x,i%7,0.1,x,false);}assert.deepEqual(a.net.checkpoint(),b.net.checkpoint());});
