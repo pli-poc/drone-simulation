@@ -1,0 +1,55 @@
+name: Audit neural source data
+on:
+  push:
+    branches: [feat/whole-cns]
+    paths: ['.github/workflows/neural-source-audit.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - run: python -m pip install pyarrow==21.0.0 pandas==2.3.3
+      - name: Read original release tables
+        run: |
+          mkdir -p audit
+          python - <<'PY'
+          import urllib.request, json, hashlib, pathlib
+          import pyarrow.feather as feather
+          import pyarrow.ipc as ipc
+          root='https://storage.googleapis.com/flyem-male-cns/v1.0/connectome-data/flat-connectome/'
+          names=['body-annotations-male-cns-v1.0-minconf-0.5.feather','body-neurotransmitters-male-cns-v1.0.feather','connectome-weights-male-cns-v1.0-minconf-0.5.feather']
+          report={}
+          for name in names:
+              path=pathlib.Path('audit')/name
+              req=urllib.request.Request(root+name)
+              h=hashlib.sha256()
+              with urllib.request.urlopen(req,timeout=180) as response, path.open('wb') as f:
+                  headers=dict(response.headers)
+                  while block:=response.read(4*1024*1024):f.write(block);h.update(block)
+              reader=ipc.open_file(str(path)); table=reader.get_batch(0)
+              item={'url':root+name,'sha256':h.hexdigest(),'bytes':path.stat().st_size,'generation':headers.get('x-goog-generation'),'schema':str(reader.schema),'batches':reader.num_record_batches,'sample':table.slice(0,3).to_pydict()}
+              if name.startswith('body-'):
+                  df=feather.read_feather(path)
+                  item['rows']=len(df);item['columns']=list(df.columns);item['index']=str(df.index.name)
+                  item['distributions']={c:{str(k):int(v) for k,v in df[c].value_counts(dropna=False).head(30).items()} for c in df.columns if any(s in c.lower() for s in ['status','type','class','side','nt_type','neurotransmitter'])}
+                  if name.startswith('body-annotations'):
+                      df.to_json('audit/annotations.json',orient='table',index=True)
+                      item['sensory_motor_examples']=df[df.astype(str).apply(lambda x:x.str.contains('LC4|LPLC2|DNp01|DNg02|GF|flight',regex=True)).any(axis=1)].head(35).astype(str).to_dict(orient='records')
+              else:item['rows']=sum(reader.get_batch(i).num_rows for i in range(reader.num_record_batches))
+              report[name]=item
+              print(name,json.dumps(item,default=str)[:30000],flush=True)
+              if name.startswith('connectome-'):path.unlink()
+          pathlib.Path('audit/report.json').write_text(json.dumps(report,indent=2,default=str))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: malecns-source-audit
+          path: audit/
+          retention-days: 90

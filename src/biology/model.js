@@ -59,7 +59,7 @@ export class FlyBody{
     const acc=limited(desiredVelocity.map((x,i)=>(x-this.v[i])*8),10),up=rotate(this.q,[0,1,0]);
     const desiredUp=unit([acc[0],G+acc[1],acc[2]]),error=inverseRotate(this.q,cross(up,desiredUp));
     const forward=rotate(this.q,[0,0,1]);let yawError=0;
-    if(Math.hypot(desiredVelocity[0],desiredVelocity[2])>0.06){const heading=Math.atan2(desiredVelocity[0],desiredVelocity[2]),current=Math.atan2(forward[0],forward[2]);yawError=Math.atan2(Math.sin(heading-current),Math.cos(heading-current));}
+    if(this.alignHeading!==false&&Math.hypot(desiredVelocity[0],desiredVelocity[2])>0.06){const heading=Math.atan2(desiredVelocity[0],desiredVelocity[2]),current=Math.atan2(forward[0],forward[2]);yawError=Math.atan2(Math.sin(heading-current),Math.cos(heading-current));}
     error[1]+=clamp(yawError,-0.8,0.8)*0.3;
     const rates=this.gyroEnabled?this.filteredOmega:[0,0,0];
     const torque=error.map((e,i)=>this.inertia[i]*(64000*e-450*rates[i]));

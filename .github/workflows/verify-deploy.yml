@@ -13,7 +13,7 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -25,8 +25,17 @@ jobs:
       - name: Install development tooling
         run: |
           npm ci --ignore-scripts
-          python -m pip install playwright==1.57.0
+          python -m pip install playwright==1.57.0 pyarrow==21.0.0 pandas==2.3.3
           python -m playwright install --with-deps chromium
+      - uses: actions/cache@v4
+        with:
+          path: .cache/neural
+          key: malecns-v1.0-source-2177e246-95c92892-e35da783
+      - name: Verify original sources and build complete neural graph
+        run: |
+          python scripts/prepare-neural.py
+          mkdir -p test-results
+          cp assets/neural/manifest.json test-results/neural-manifest.json
       - name: Unit and regression tests
         run: |
           mkdir -p test-results
@@ -34,11 +43,13 @@ jobs:
       - name: Browser tests and screenshots
         run: |
           set -o pipefail
-          python tests/browser_biology.py 2>&1 | tee test-results/browser.log
+          python tests/browser_neural.py 2>&1 | tee test-results/browser.log
       - name: Deterministic scenario benchmark
         run: npm run benchmark
       - name: Biological mechanics benchmark
         run: npm run benchmark:biology
+      - name: Full neural graph and causal integration benchmark
+        run: npm run benchmark:neural
       - name: Build static site
         run: npm run build
       - name: Record verification summary
@@ -87,7 +98,7 @@ jobs:
         run: |
           folder="runs/${RUN_ID}-${ATTEMPT}-${TESTED_SHA}"
           mkdir -p "$folder"
-          for file in summary.json summary.md unit.xml browser-results.json benchmark.json biology-benchmark.json worker-training.json; do
+          for file in summary.json summary.md unit.xml browser-results.json benchmark.json biology-benchmark.json worker-training.json neural-benchmark.json neural-training.json neural-manifest.json; do
             if [ -f "$EVIDENCE/$file" ]; then cp "$EVIDENCE/$file" "$folder/$file"; fi
           done
           git config user.name 'github-actions[bot]'
@@ -135,7 +146,7 @@ jobs:
                       raise ValueError('Previous build is still being served')
                   html=urllib.request.urlopen(base,timeout=20).read().decode()
                   assert 'Mosquito Drone Lab' in html
-                  for path in ['src/workers/simulation.worker.js','docs/EXECUTION-BRIEF.md','biology.html','src/biology/worker.js','docs/BIOLOGICAL-MODEL.md']:
+                  for path in ['src/workers/simulation.worker.js','docs/EXECUTION-BRIEF.md','biology.html','src/biology/worker.js','docs/BIOLOGICAL-MODEL.md','neural.html','src/neural/worker.js','assets/neural/manifest.json']:
                       assert urllib.request.urlopen(base+path,timeout=20).status==200
                   print('Verified live URL:',base,'commit:',data['commit'])
                   with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:

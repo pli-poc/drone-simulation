@@ -1,16 +1,19 @@
 {
   "name": "mosquito-drone-lab",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
-  "description": "Dependency-free browser simulation and local residual-policy learning laboratory",
+  "description": "Browser-local full MaleCNS neural/flight and independent drone-learning laboratory",
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "test:browser": "python tests/browser_biology.py",
+    "test:browser": "python tests/browser_neural.py",
     "benchmark": "node scripts/benchmark.mjs",
     "benchmark:biology": "node scripts/biology-benchmark.mjs",
     "build": "node scripts/build.mjs",
-    "dev": "node scripts/serve.mjs"
+    "dev": "node scripts/serve.mjs",
+    "benchmark:neural": "node scripts/neural-benchmark.mjs"
   },
-  "engines": { "node": ">=22" }
+  "engines": {
+    "node": ">=22"
+  }
 }
