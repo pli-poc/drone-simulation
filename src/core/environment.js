@@ -7,10 +7,10 @@ import {add,sub,mul,norm,limit,distance,boxDistance,sweptHit,segmentOriginDistan
 export const STEP=0.1,PHYSICS_STEP=1/60;
 /** Authoritative engine shared by the viewer and training workers. Acceleration-limited surrogate. */
 export class Environment{
-  constructor(input={}){this.reset(input);}
+  constructor(input={},dependencies={}){this.insectFactory=dependencies.insectFactory;this.reset(input);}
   reset(input={}){
     this.config=config(input);this.world=scene(this.config.scenario);this.time=0;this.ticks=0;
-    this.drone={p:[...this.world.spawn],v:[0,0,0],yaw:0};this.insect=this.config.insectModel==='biological'?new BiologicalInsect(this.world.insectSpawn,this.config.seed,this.config):new ReactiveInsect(this.world.insectSpawn,this.config.seed);
+    this.drone={p:[...this.world.spawn],v:[0,0,0],yaw:0};if(this.config.insectModel==='neural'&&!this.insectFactory)throw new Error('Full neural assets must be loaded before neural Environment construction.');this.insect=this.config.insectModel==='neural'?this.insectFactory(this.world.insectSpawn,this.config.seed,this.config):this.config.insectModel==='biological'?new BiologicalInsect(this.world.insectSpawn,this.config.seed,this.config):new ReactiveInsect(this.world.insectSpawn,this.config.seed);
     this.sensors=new Sensors(this.config.seed);this.track=null;
     this.metrics={contacts:0,collisions:0,interventions:0,nearMissSteps:0,minClearance:10,clearance:10,pathLength:0,return:0,trackingSteps:0,steps:0,insectCollisions:0};
     this.safety={reason:'WAITING FOR TRACK',intervention:false,protectedTarget:false};this.done=false;this.outcome='running';this.lastAction=0;
