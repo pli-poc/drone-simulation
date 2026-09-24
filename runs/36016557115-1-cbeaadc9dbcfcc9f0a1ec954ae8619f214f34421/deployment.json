@@ -1,0 +1,20 @@
+{
+  "schema": "mosquito-drone-lab/deployment-record@1",
+  "commit": "cbeaadc9dbcfcc9f0a1ec954ae8619f214f34421",
+  "run": "36016557115",
+  "job": "107691425740",
+  "url": "https://pli-poc.github.io/drone-simulation/",
+  "verifiedAt": "2026-09-24T14:59:42.9332136Z",
+  "deploymentSucceeded": true,
+  "publicCommitMatched": true,
+  "checks": [
+    "GitHub Pages deployment reported success",
+    "Public build.json matched the expected commit",
+    "Public homepage contained the application title",
+    "Public simulation worker returned HTTP 200",
+    "Public execution brief returned HTTP 200"
+  ],
+  "evidence": "https://github.com/pli-poc/drone-simulation/actions/runs/36016557115/job/107691425740",
+  "recordMethod": "Recorded after inspecting the completed GitHub Actions deployment job log.",
+  "limitations": "HTTP publication checks and software verification only; not real-world safety or biological validation."
+}
