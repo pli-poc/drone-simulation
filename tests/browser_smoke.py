@@ -1,6 +1,6 @@
 """Real Chromium smoke checks. Python/Playwright are test-only dependencies, not site requirements."""
-import json, os, pathlib, shutil, subprocess, sys, time, unittest, urllib.request
-from playwright.sync_api import sync_playwright
+import json, os, pathlib, re, shutil, subprocess, sys, time, unittest, urllib.request
+from playwright.sync_api import sync_playwright, expect
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 OUT=ROOT/'test-results'
 BASE=os.environ.get('TEST_BASE_URL','http://127.0.0.1:4173/drone-simulation/')
@@ -40,7 +40,8 @@ class BrowserTests(unittest.TestCase):
         self.assertEqual(self.external,[],'Unexpected external runtime requests')
     def test_01_render_and_controls(self):
         self.assertEqual(self.page.locator('#scene').get_attribute('data-webgl'),'ready')
-        self.page.click('#pause');self.page.wait_for_function("document.querySelector('#run-state').textContent==='PAUSED'")
+        self.page.screenshot(path=str(OUT/'desktop-home.png'),full_page=True)
+        self.page.click('#pause');expect(self.page.locator('#run-state')).to_have_text('PAUSED')
         before=self.page.locator('#clock').inner_text();self.page.wait_for_timeout(200)
         self.assertEqual(self.page.locator('#clock').inner_text(),before)
         self.page.click('#step');self.page.wait_for_timeout(250)
@@ -53,19 +54,20 @@ class BrowserTests(unittest.TestCase):
         path=d.value.path();data=json.loads(pathlib.Path(path).read_text());self.assertEqual(data['schema'],'mosquito-drone-lab/experiment@1')
     def test_02_training_and_policy_export(self):
         self.page.select_option('#scenario','arena');self.page.fill('#duration','5');self.page.locator('#duration').dispatch_event('change');self.page.fill('#episodes','2');self.page.click('#train')
-        self.page.wait_for_function("document.querySelector('#training-status').textContent.startsWith('Completed')",timeout=120000)
+        expect(self.page.locator('#training-status')).to_have_text(re.compile(r'^Completed'),timeout=120000)
         self.assertIn('UPDATES',self.page.locator('#updates').inner_text());self.assertGreater(int(self.page.locator('#updates').inner_text().split()[0]),0)
         self.assertEqual(self.page.locator('#benchmark tr').count(),3)
+        self.page.screenshot(path=str(OUT/'trained-policy-comparison.png'),full_page=True)
         self.page.click('#apply-policy');self.assertEqual(self.page.locator('#controller').input_value(),'learned')
         with self.page.expect_download() as d:self.page.click('#export-policy')
         data=json.loads(pathlib.Path(d.value.path()).read_text());self.assertEqual(data['dimensions'],[19,24,7]);self.assertGreater(data['meta']['updates'],0)
         self.page.reload();self.page.wait_for_selector('body[data-ready="true"]');self.assertTrue(self.page.locator('#apply-policy').is_enabled());self.assertEqual(self.page.locator('#controller').input_value(),'baseline')
     def test_03_invalid_import_and_cancel(self):
         self.page.locator('#policy-file').set_input_files({'name':'bad.json','mimeType':'application/json','buffer':b'{"schema":"wrong"}'})
-        self.page.wait_for_function("document.querySelector('#error').textContent.includes('Import rejected')")
+        expect(self.page.locator('#error')).to_contain_text('Import rejected')
         self.assertTrue(self.page.locator('#apply-policy').is_disabled())
         self.page.fill('#episodes','300');self.page.click('#train');self.page.click('#cancel-train')
-        self.page.wait_for_function("document.querySelector('#training-status').textContent.startsWith('Cancelled')",timeout=10000)
+        expect(self.page.locator('#training-status')).to_have_text(re.compile(r'^Cancelled'),timeout=10000)
         self.assertTrue(self.page.locator('#train').is_visible())
     def test_04_mobile_layout_and_project_paths(self):
         self.page.set_viewport_size({'width':390,'height':844});self.page.wait_for_timeout(300)
