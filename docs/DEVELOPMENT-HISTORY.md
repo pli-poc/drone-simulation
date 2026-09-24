@@ -21,3 +21,10 @@ Sources of continuing history:
 - Detailed evidence: each run's artifact (90 days for screenshots/traces)
 
 Failures remain visible. Fixes receive new commits rather than rewriting failed history. Administrative branch-protection rules are not set by the application.
+
+
+## Biological flight candidate, 24 September 2026
+
+The v0.2 extension is prepared in three local stages: wing/body mechanics and sensory behavior; laboratory UI and room/drone integration; and regression/worker tests, model provenance and CI evidence retention. These commits descend from the exact published base `cbeaadc9dbcfcc9f0a1ec954ae8619f214f34421` and are packaged as a Git bundle plus patches. They are **not remote commits or a deployed release** at packaging.
+
+Local final verification passed 51 Node cases. A complete learning/evaluation run used the unmodified training worker through a Node message adapter. Browser navigation was blocked in the authoring environment and WebGL2 was unavailable in the offline view probe; the seven configured Chromium cases must still run in CI. Details are in `docs/evidence/biology-local/` and the package's publication notes. Full neural/body integration remains tracked separately in issue #3.

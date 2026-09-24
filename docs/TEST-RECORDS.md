@@ -21,3 +21,10 @@ Screenshots, Playwright traces, raw logs and the benchmark report are uploaded a
 ## Interpretation boundaries
 
 The scenario benchmark is a small deterministic software experiment. Tests check implementation behavior; they do not establish biological fidelity, reliable camera detection, general navigation safety, electrical effectiveness or sim-to-real transfer. Collision-free samples, when observed, are samples—not a safety guarantee.
+
+
+## Local v0.2 biological mechanics candidate
+
+51 Node cases passed (25 existing, 24 biological and two worker protocol cases). A message adapter exercised the real simulation/training modules in Node, including two training episodes and 12 held-out evaluation episodes per controller. This is not a browser integration pass or empirical biological validation.
+
+The original benchmark still has the documented moving-occupant collisions. The small biological benchmark is a separate software test configuration and must not be used to erase those failures. Seven Chromium checks are configured, but browser/CI publication remains pending. See `evidence/biology-local/summary.json` for a source fingerprint and explicit execution statuses.
