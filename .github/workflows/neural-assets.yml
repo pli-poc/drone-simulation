@@ -1,0 +1,28 @@
+name: Prepare full MaleCNS browser assets
+on:
+  push:
+    branches: [feat/whole-cns]
+    paths: ['scripts/prepare-neural.py', '.github/workflows/neural-assets.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - run: python -m pip install pyarrow==21.0.0 pandas==2.3.3
+      - uses: actions/cache@v4
+        with:
+          path: .cache/neural
+          key: malecns-v1.0-source-2177e246-95c92892-e35da783
+      - run: python scripts/prepare-neural.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: malecns-browser-assets
+          path: assets/neural/
+          retention-days: 90
