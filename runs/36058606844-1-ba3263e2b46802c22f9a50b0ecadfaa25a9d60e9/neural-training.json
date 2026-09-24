@@ -1,0 +1,135 @@
+{
+  "scope": "Real Chromium training worker, full original traced-neuron graph; two held-out seeds per controller, not a performance-validation sample.",
+  "meta": {
+    "config": {
+      "scenario": "arena",
+      "seed": 42,
+      "speed": 0.3,
+      "range": 5.5,
+      "latency": 80,
+      "agility": 0.65,
+      "wind": 0.12,
+      "dropout": 0.04,
+      "duration": 5,
+      "task": "contact",
+      "insectModel": "neural",
+      "bioFrequency": 218,
+      "bioMassScale": 1,
+      "neuralDtMs": 0.5
+    },
+    "episodes": 2,
+    "evaluationEpisodes": 2,
+    "updates": 10,
+    "seed": 42,
+    "neuralProvenance": {
+      "dataset": "male-cns:v1.0",
+      "graphSha256": "c1a42e90a87768c166c1dd43908065880d6c852440cb28544384ba2cef41343d",
+      "neurons": 165122,
+      "connections": 25563197,
+      "model": "malecns-lif-v1",
+      "dtMs": 0.5
+    },
+    "created": "2026-09-24T21:05:11.323Z"
+  },
+  "history": [
+    {
+      "episode": 1,
+      "return": -0.312210288622083,
+      "contact": 0,
+      "collisions": 0,
+      "interventions": 0,
+      "loss": 0,
+      "epsilon": 0.4
+    },
+    {
+      "episode": 2,
+      "return": -0.1921264000828934,
+      "contact": 0,
+      "collisions": 0,
+      "interventions": 0,
+      "loss": 0.00016962173068203165,
+      "epsilon": 0.384
+    }
+  ],
+  "evaluation": {
+    "baseline": {
+      "episodes": 2,
+      "contactRate": 0,
+      "collisions": 0,
+      "meanReturn": 0.684176952127977,
+      "meanInterventions": 0,
+      "results": [
+        {
+          "seed": 700001,
+          "contacts": 0,
+          "collisions": 0,
+          "interventions": 0,
+          "nearMissSteps": 0,
+          "minClearance": 0.9199999999999999,
+          "clearance": 1.1784731118032479,
+          "pathLength": 1.053453586022573,
+          "return": 0.6020693931362614,
+          "trackingSteps": 50,
+          "steps": 50,
+          "insectCollisions": 0,
+          "outcome": "timeout"
+        },
+        {
+          "seed": 707920,
+          "contacts": 0,
+          "collisions": 0,
+          "interventions": 0,
+          "nearMissSteps": 0,
+          "minClearance": 0.9199999999999999,
+          "clearance": 1.1613141771317073,
+          "pathLength": 1.178697965802369,
+          "return": 0.7662845111196926,
+          "trackingSteps": 50,
+          "steps": 50,
+          "insectCollisions": 0,
+          "outcome": "timeout"
+        }
+      ]
+    },
+    "learned": {
+      "episodes": 2,
+      "contactRate": 0,
+      "collisions": 0,
+      "meanReturn": -0.5148011511278416,
+      "meanInterventions": 0,
+      "results": [
+        {
+          "seed": 700001,
+          "contacts": 0,
+          "collisions": 0,
+          "interventions": 0,
+          "nearMissSteps": 0,
+          "minClearance": 0.8496592736006128,
+          "clearance": 0.8496592736006128,
+          "pathLength": 0.8634314392863766,
+          "return": -0.6505278544434576,
+          "trackingSteps": 50,
+          "steps": 50,
+          "insectCollisions": 0,
+          "outcome": "timeout"
+        },
+        {
+          "seed": 707920,
+          "contacts": 0,
+          "collisions": 0,
+          "interventions": 0,
+          "nearMissSteps": 0,
+          "minClearance": 0.7516835866651832,
+          "clearance": 0.7516835866651832,
+          "pathLength": 0.9647851289548802,
+          "return": -0.37907444781222577,
+          "trackingSteps": 50,
+          "steps": 50,
+          "insectCollisions": 0,
+          "outcome": "timeout"
+        }
+      ]
+    },
+    "scope": "Same scenario family; unseen random seeds, NOT unseen homes."
+  }
+}
