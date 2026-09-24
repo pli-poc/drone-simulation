@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+	<testcase name="RNG is deterministic, finite and bounded" time="0.005070" classname="test"/>
+	<testcase name="configuration sanitizes invalid inputs and bounds physical knobs" time="0.000478" classname="test"/>
+	<testcase name="ray slab handles misses, parallel rays, inside starts and segment bounds" time="0.000318" classname="test"/>
+	<testcase name="swept collision detects tunneling and complete vehicle envelope" time="0.000164" classname="test"/>
+	<testcase name="continuous relative contact handles crossings and degenerate segments" time="0.000147" classname="test"/>
+	<testcase name="all scenario spawns are collision free" time="0.000370" classname="test"/>
+	<testcase name="sensor latency prevents future observations and expires lost tracks" time="0.000326" classname="test"/>
+	<testcase name="occlusion blocks target observations" time="0.000167" classname="test"/>
+	<testcase name="independent seeded episodes replay exactly" time="0.060306" classname="test"/>
+	<testcase name="one control step is six physics substeps and produces 19 finite observations" time="0.000754" classname="test"/>
+	<testcase name="navigation observations describe the waypoint, not the insect" time="0.000348" classname="test"/>
+	<testcase name="no target track means no pursuit command" time="0.000123" classname="test"/>
+	<testcase name="safety filter cancels pursuit when target enters a person exclusion" time="0.000573" classname="test"/>
+	<testcase name="safety filter changes an imminent collision command" time="0.000271" classname="test"/>
+	<testcase name="invalid actions are rejected without mutating time" time="0.000373" classname="test"/>
+	<testcase name="timeout is truncation and terminal steps are idempotent" time="0.009692" classname="test"/>
+	<testcase name="near-miss counter uses current clearance rather than a historical minimum" time="0.000233" classname="test"/>
+	<testcase name="snapshot is detached and electrical activation is impossible" time="0.000137" classname="test"/>
+	<testcase name="batch of seeded episodes terminates with finite metrics" time="0.130388" classname="test"/>
+	<testcase name="network has seven finite action values and validates observations" time="0.001133" classname="test"/>
+	<testcase name="checkpoint round trip preserves policy exactly" time="0.003001" classname="test"/>
+	<testcase name="untrusted model imports reject shape, schema, nonfinite and extreme weights" time="0.000520" classname="test"/>
+	<testcase name="failed import leaves previous model unchanged" time="0.000888" classname="test"/>
+	<testcase name="learning performs real weight updates, with finite loss" time="0.014522" classname="test"/>
+	<testcase name="identical training inputs reproduce identical weights" time="0.012087" classname="test"/>
+	<!-- tests 25 -->
+	<!-- suites 0 -->
+	<!-- pass 25 -->
+	<!-- fail 0 -->
+	<!-- cancelled 0 -->
+	<!-- skipped 0 -->
+	<!-- todo 0 -->
+	<!-- duration_ms 266.446635 -->
+</testsuites>

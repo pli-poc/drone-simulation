@@ -1,0 +1,33 @@
+{
+  "schema": "mosquito-drone-lab/verification@1",
+  "commit": "cbeaadc9dbcfcc9f0a1ec954ae8619f214f34421",
+  "run": "36050286454",
+  "attempt": "1",
+  "ref": "refs/heads/feat/biological-flight",
+  "event": "push",
+  "created": "2026-09-24T19:46:14.885987+00:00",
+  "passed": true,
+  "unit": {
+    "available": true,
+    "tests": 25,
+    "failures": 0,
+    "errors": 0
+  },
+  "browser": {
+    "available": true,
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": true,
+    "failureDetails": []
+  },
+  "benchmark": {
+    "available": true,
+    "episodes": 16,
+    "wallSeconds": 0.25403380500000006,
+    "collisions": 2,
+    "contacts": 1
+  },
+  "limitations": "Software verification only; not biological or physical safety validation."
+}
