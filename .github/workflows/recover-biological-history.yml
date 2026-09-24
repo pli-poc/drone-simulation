@@ -1,0 +1,28 @@
+name: Recover original biological history
+
+on:
+  push:
+    branches: [ops/import-biological-flight]
+
+permissions:
+  contents: write
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Verify transport and recover original Git objects
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 recovery/recover.py
+      - name: Retain recovery evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: biological-history-recovery-${{ github.run_id }}
+          path: recovery/
+          retention-days: 90
