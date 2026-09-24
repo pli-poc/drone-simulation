@@ -1,0 +1,14 @@
+{
+  "name": "mosquito-drone-lab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Browser-local indoor drone simulation and residual-policy learning laboratory",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/serve.mjs"
+  },
+  "dependencies": { "three": "0.180.0" },
+  "engines": { "node": ">=22" }
+}
