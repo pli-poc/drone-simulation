@@ -1,7 +1,8 @@
 """Recover the user's three original commits; never update a branch or deploy."""
-import base64, gzip, hashlib, json, os, pathlib, subprocess, urllib.request
+import base64, gzip, hashlib, json, os, pathlib, subprocess, urllib.request, urllib.error
 ROOT=pathlib.Path('recovery')
 BASE='e7213994a8d1490a310d8ab7c9f7f3b4e162ec11'
+WORKFLOW_BASE='3073bc085ce002ff1c4741839e2b6e0e8dcbd2e7'
 FINAL='7b2dd86b664d237059f4f2971e173bab7d51222d'
 PATCH_HASH='d3481261f709cc9a268089e8da2bbaac00a0e65eb0538f56efb0d806e2aadf33'
 # Transport corrections are explicit and the decoded patch must match its original SHA-256.
@@ -33,12 +34,18 @@ for path in filter(None,paths):
     assert mode=='100644', f'Unexpected mode: {path}'
     entries.append({'path':path,'mode':mode,'type':'blob','content':git('show',':'+path).decode('utf-8')})
 assert len(entries)==19, f'Unexpected changed-file count: {len(entries)}'
+# The connected account has already created the workflow update. This job writes source/data only.
+entries=[e for e in entries if not e['path'].startswith('.github/')]
 api='https://api.github.com/repos/pli-poc/drone-simulation/git/'
 def post(endpoint,data):
     req=urllib.request.Request(api+endpoint,data=json.dumps(data).encode(),headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'},method='POST')
-    with urllib.request.urlopen(req,timeout=60) as response:
-        return json.load(response)
-result=post('trees',{'base_tree':BASE,'tree':entries})
+    try:
+        with urllib.request.urlopen(req,timeout=60) as response:
+            return json.load(response)
+    except urllib.error.HTTPError as exc:
+        print('GitHub API error:',exc.code,exc.read().decode('utf-8'))
+        raise
+result=post('trees',{'base_tree':WORKFLOW_BASE,'tree':entries})
 assert result['sha']==FINAL, 'Remote source tree differs'
 author={'name':'OpenAI Assistant','email':'assistant@local.invalid','date':'2026-09-24T19:41:33Z'}
 commits=[
