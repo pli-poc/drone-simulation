@@ -21,6 +21,20 @@ npm run dev
 
 Open http://127.0.0.1:4173/drone-simulation/ . `npm run build` produces `dist/` for GitHub Pages.
 
+## Biological flight extension (v0.2)
+
+Open `biology.html` through the local server for the magnified force-driven fruit-fly lab. Use 1/50× slow motion to inspect the wings. Switch to 1× to test hover, forward flight, looms, gusts, wing shutdown and angular-rate feedback. Export the actual experiment trace.
+
+Choose **Train the drone against this fly** to open the indoor simulator with the biological opponent selected. The drone learns its own residual policy; the insect controller stays fixed. The original procedural opponent is still selectable.
+
+This is a **new reduced-order mechanics implementation**, not a port of the complete MuJoCo `flybody` model or a whole-brain controller. See [model equations, provenance and limitations](docs/BIOLOGICAL-MODEL.md). Published reference size/mass/frequency do not validate the assumed aerodynamics or escape controller.
+
+```bash
+npm run benchmark:biology
+```
+
+The test suite contains 51 unit/regression checks and seven configured Chromium integration cases. Check actual run records for pass/fail status; the presence of a test is not evidence that it passed.
+
 ## Use the lab
 
 Choose an arena/home scenario, change sensor and movement assumptions, inspect tracks/ranges/clearance, and compare the conventional controller with a locally trained residual DQN. Start learning pauses the viewer, runs real weight updates in another worker, then evaluates both frozen policies on the same 12 held-out seeds. Apply the learned policy explicitly. Export/import weights and export session traces plus training/evaluation data as JSON.
@@ -29,7 +43,7 @@ Weights are saved locally when browser storage permits. Weight imports are warm 
 
 ## Scope and honesty
 
-This is the **first executable prototype**, not a completed research implementation or a physical mosquito-control product. It uses acceleration-limited drone motion, a procedural reactive insect, synthetic detection outputs and an oracle-map safety filter. There is no full fly brain, calibrated mosquito aerodynamics, camera recognition, SLAM, battery model or confirmed electrical effectiveness yet. The execution brief contains explicit follow-on work packages.
+This is the **first executable prototype**, not a completed research implementation or a physical mosquito-control product. It uses acceleration-limited drone motion, a selectable procedural or reduced-order wing-driven fruit-fly opponent, synthetic detection outputs and an oracle-map safety filter. There is no full fly brain, calibrated mosquito aerodynamics, camera recognition, SLAM, battery model or confirmed electrical effectiveness yet. The execution brief contains explicit follow-on work packages.
 
 **Known benchmark failure:** the initial moving-occupant baseline collides in seeds 42 and 234 of the recorded 12-second scenario batch. This release is an experimental environment, not a solved indoor navigator.
 

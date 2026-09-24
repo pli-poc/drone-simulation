@@ -1,6 +1,6 @@
 # Mosquito Drone Lab — browser-first execution brief
 
-**Version:** 3.0 / first executable milestone 0.1.0  
+**Version:** 3.1 / biological mechanics candidate 0.2.0  
 **Date:** 24 September 2026  
 **Repository:** https://github.com/pli-poc/drone-simulation  
 **Project site:** https://pli-poc.github.io/drone-simulation/  
@@ -243,3 +243,34 @@ These are upstream resources for the pending integration work, not claims that t
 - Browser testing: https://playwright.dev/python/docs/intro
 
 Re-check licenses, model/data availability, actual implementation capabilities and revision-specific limitations before importing any upstream asset.
+
+
+## 13. BIO-ROM-1 — browser-native biological flight mechanics (v0.2)
+
+This section updates the implementation status without closing the full biological research workstream in sections 8–9. Model equations, provenance, limits and reproduction instructions are in `BIOLOGICAL-MODEL.md`.
+
+### Implemented in the local v0.2 candidate
+
+- `src/biology/model.js`: independent 6-DOF fruit-fly rigid body; two prescribed flapping wings; four radial strips per wing; quasi-steady translational lift/drag and body moments; gravity and assumed body drag. Quaternion integration and nominal 0.2 ms substeps. Published reference mass/length/span/frequency; explicitly assumed wing geometry, coefficients, inertia and gains.
+- `src/biology/insect.js`: frozen sensory-to-wing controller with delayed synthetic looming cues, seeded spontaneous turns, engineered bank/counterrotation control, and terminal insect-obstacle contact records.
+- `src/biology/experiment.js` + `worker.js`: independent laboratory state, simulation clock, sensory/actuation ablations, approach/gust/roll disturbances, and bounded experiment trace export.
+- `biology.html`, `view.js`, `lab.js`, `lab.css`: magnified observer, body-follow camera, physical wing pose, actual force/actuator readouts, slow motion and five-millisecond stepping. Observer magnification never changes physical geometry.
+- `Environment`: selectable `insectModel` (`procedural` or `biological`), `bioFrequency` (196–240 Hz) and `bioMassScale` (0.7–1.3). The drone's own 19-input policy and fixed safety filter remain separate. No insect internal state enters the drone observation.
+
+### Concrete defaults and interfaces
+
+`BiologicalInsect(p, seed, config).step(dt, drone, boxes, config, time)` exposes read-only position/velocity getters and `snapshot()`. Snapshot adds `bio` with quaternion `[w,x,y,z]`, angular velocity, phase, wing poses, world-vertical wing force, mean world-force vector, aerodynamic stroke power, sensory cues and escaped/contact state. The label `connectome: false` is explicit.
+
+Laboratory worker messages: `reset`, `running`, `rate`, `step`, `toggle`, `stimulus`, `export`. Outbound messages: `snapshot`, `export`, `error`. Any integration divergence stops the experiment. Wing shutdown removes wing support; the observer must never restore altitude to hide a fall.
+
+The shared indoor engine terminates an episode on insect-obstacle contact and reports `insectCollisions`. It does not award mosquito neutralization for this event. Existing moving-person collision shortcomings remain open in issue #2.
+
+### Tests and publication gate
+
+`npm test`: 51 cases, including the original 25, mechanics and sensory ablations, detached snapshots, seeded reproducibility, drone-weight updates, and real worker code exercised through a Node-only message adapter. `npm run test:browser`: seven Chromium integration cases including lab UI/exports, biological-opponent training, and mobile/project paths. `npm run benchmark:biology`: physics timing, hover and sensory ablations plus eight seeded indoor episodes.
+
+CI retains existing main deployment gates, adds the biological benchmark and worker-training record to durable test history, and verifies the deployed biological entry page, worker and model card. Local Node results are not a substitute for browser/CI results. This candidate has not been pushed or deployed at packaging.
+
+### Deliberately not marked complete
+
+The full upstream `flybody`/MuJoCo model, trained flybody policy, connectome controller, measured escape-trajectory fit, calibrated mosquito species model, rotor-wake CFD, real camera perception, localization and real-world safety validation remain unimplemented. BIO-ROM-1 is a runnable comparison model, not a renaming of those requirements.

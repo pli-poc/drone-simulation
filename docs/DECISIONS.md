@@ -14,3 +14,10 @@ Accepted 2026-09-24. The initial filter uses the exact simulator map. Learned re
 
 ## ADR-005 — Auditable publication
 Accepted 2026-09-24. Preserve early recovered code as separate commits. Use a development branch and merge commit. CI gates Pages publication. Store durable compact test records on test-history; screenshot/trace artifacts use 90-day retention. No force pushes, squash merges, secrets in the website, or claims of repository protection not actually configured.
+
+
+## ADR-006 — Reduced-order mechanics before full upstream neural/body integration
+Accepted for local v0.2 candidate, 2026-09-24. Add a native-JavaScript wing-force body model as an explicit comparison opponent. Preserve the user's zero-service browser deployment requirement and no runtime library requirement for this milestone. No MuJoCo, connectome weights, or upstream meshes are silently claimed to be loaded. The selected research integration remains open; published reference dimensions do not validate our assumed aerodynamics or controller.
+
+## ADR-007 — Separate software evidence from publication and biological validation
+Accepted 2026-09-24. Record local regression/worker results even when browser or repository publication is unavailable. Never map a local pass to a GitHub Actions status. Preserve separate commits and a portable Git bundle against the exact verified repository base. Only the normal verified Pages workflow may publish a merged update.

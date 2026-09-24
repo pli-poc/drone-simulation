@@ -1,0 +1,320 @@
+
+> mosquito-drone-lab@0.2.0 test
+> node --test tests/*.test.mjs
+
+TAP version 13
+# Subtest: published reference dimensions and units are explicit
+ok 1 - published reference dimensions and units are explicit
+  ---
+  duration_ms: 1.946479
+  type: 'test'
+  ...
+# Subtest: trim solves cycle-average lift equal to weight without altering gravity
+ok 2 - trim solves cycle-average lift equal to weight without altering gravity
+  ---
+  duration_ms: 3.538245
+  type: 'test'
+  ...
+# Subtest: symmetric wings have zero cycle-average torque
+ok 3 - symmetric wings have zero cycle-average torque
+  ---
+  duration_ms: 3.226292
+  type: 'test'
+  ...
+# Subtest: asymmetric wing commands create roll, pitch, yaw moments with correct signs
+ok 4 - asymmetric wing commands create roll, pitch, yaw moments with correct signs
+  ---
+  duration_ms: 14.089488
+  type: 'test'
+  ...
+# Subtest: wing force varies within the beat; no constant artificial hover force
+ok 5 - wing force varies within the beat; no constant artificial hover force
+  ---
+  duration_ms: 0.376678
+  type: 'test'
+  ...
+# Subtest: hover remains bounded for two seconds with unit quaternion
+ok 6 - hover remains bounded for two seconds with unit quaternion
+  ---
+  duration_ms: 426.089064
+  type: 'test'
+  ...
+# Subtest: wing shutdown causes gravity-driven descent
+ok 7 - wing shutdown causes gravity-driven descent
+  ---
+  duration_ms: 27.267706
+  type: 'test'
+  ...
+# Subtest: force-driven body can steer laterally, not just replay forward flight
+ok 8 - force-driven body can steer laterally, not just replay forward flight
+  ---
+  duration_ms: 346.288213
+  type: 'test'
+  ...
+# Subtest: half timestep gives consistent one-second endpoint
+ok 9 - half timestep gives consistent one-second endpoint
+  ---
+  duration_ms: 339.645621
+  type: 'test'
+  ...
+# Subtest: frequency and mass experiments remain bounded across documented ranges
+ok 10 - frequency and mass experiments remain bounded across documented ranges
+  ---
+  duration_ms: 185.088621
+  type: 'test'
+  ...
+# Subtest: visual expansion responds to an approaching object
+ok 11 - visual expansion responds to an approaching object
+  ---
+  duration_ms: 1.831902
+  type: 'test'
+  ...
+# Subtest: occlusion prevents a visible threat cue
+ok 12 - occlusion prevents a visible threat cue
+  ---
+  duration_ms: 0.391533
+  type: 'test'
+  ...
+# Subtest: delayed vision does not trigger escape before sensory delivery
+ok 13 - delayed vision does not trigger escape before sensory delivery
+  ---
+  duration_ms: 4.722973
+  type: 'test'
+  ...
+# Subtest: unrehearsed left and right looms produce opposite reactive escapes
+ok 14 - unrehearsed left and right looms produce opposite reactive escapes
+  ---
+  duration_ms: 143.585729
+  type: 'test'
+  ...
+# Subtest: visual ablation removes visual escape but does not disable flight
+ok 15 - visual ablation removes visual escape but does not disable flight
+  ---
+  duration_ms: 47.041128
+  type: 'test'
+  ...
+# Subtest: a physical gust still affects the fly with vision disabled
+ok 16 - a physical gust still affects the fly with vision disabled
+  ---
+  duration_ms: 28.130642
+  type: 'test'
+  ...
+# Subtest: rate-feedback stabilizer recovers from roll impulse
+ok 17 - rate-feedback stabilizer recovers from roll impulse
+  ---
+  duration_ms: 112.528052
+  type: 'test'
+  ...
+# Subtest: biological experiment export retains configuration, stimuli and actual physics
+ok 18 - biological experiment export retains configuration, stimuli and actual physics
+  ---
+  duration_ms: 2.625454
+  type: 'test'
+  ...
+# Subtest: biological opponent is seeded and reproducible
+ok 19 - biological opponent is seeded and reproducible
+  ---
+  duration_ms: 127.115636
+  type: 'test'
+  ...
+# Subtest: drone observation dimension remains 19 and contains no insect internal state
+ok 20 - drone observation dimension remains 19 and contains no insect internal state
+  ---
+  duration_ms: 14.361453
+  type: 'test'
+  ...
+# Subtest: drone learner updates against the independent biological opponent
+ok 21 - drone learner updates against the independent biological opponent
+  ---
+  duration_ms: 871.158803
+  type: 'test'
+  ...
+# Subtest: insect obstacle contact is recorded, not silently bounced
+ok 22 - insect obstacle contact is recorded, not silently bounced
+  ---
+  duration_ms: 0.549254
+  type: 'test'
+  ...
+# Subtest: invalid physics inputs are rejected and exposed config is bounded
+ok 23 - invalid physics inputs are rejected and exposed config is bounded
+  ---
+  duration_ms: 0.435508
+  type: 'test'
+  ...
+# Subtest: biological snapshots cannot mutate internal wing forces
+ok 24 - biological snapshots cannot mutate internal wing forces
+  ---
+  duration_ms: 0.514461
+  type: 'test'
+  ...
+# Subtest: RNG is deterministic, finite and bounded
+ok 25 - RNG is deterministic, finite and bounded
+  ---
+  duration_ms: 15.779179
+  type: 'test'
+  ...
+# Subtest: configuration sanitizes invalid inputs and bounds physical knobs
+ok 26 - configuration sanitizes invalid inputs and bounds physical knobs
+  ---
+  duration_ms: 0.753081
+  type: 'test'
+  ...
+# Subtest: ray slab handles misses, parallel rays, inside starts and segment bounds
+ok 27 - ray slab handles misses, parallel rays, inside starts and segment bounds
+  ---
+  duration_ms: 0.474929
+  type: 'test'
+  ...
+# Subtest: swept collision detects tunneling and complete vehicle envelope
+ok 28 - swept collision detects tunneling and complete vehicle envelope
+  ---
+  duration_ms: 0.544378
+  type: 'test'
+  ...
+# Subtest: continuous relative contact handles crossings and degenerate segments
+ok 29 - continuous relative contact handles crossings and degenerate segments
+  ---
+  duration_ms: 0.362557
+  type: 'test'
+  ...
+# Subtest: all scenario spawns are collision free
+ok 30 - all scenario spawns are collision free
+  ---
+  duration_ms: 0.885411
+  type: 'test'
+  ...
+# Subtest: sensor latency prevents future observations and expires lost tracks
+ok 31 - sensor latency prevents future observations and expires lost tracks
+  ---
+  duration_ms: 0.659276
+  type: 'test'
+  ...
+# Subtest: occlusion blocks target observations
+ok 32 - occlusion blocks target observations
+  ---
+  duration_ms: 0.890586
+  type: 'test'
+  ...
+# Subtest: independent seeded episodes replay exactly
+ok 33 - independent seeded episodes replay exactly
+  ---
+  duration_ms: 109.169376
+  type: 'test'
+  ...
+# Subtest: one control step is six physics substeps and produces 19 finite observations
+ok 34 - one control step is six physics substeps and produces 19 finite observations
+  ---
+  duration_ms: 1.251727
+  type: 'test'
+  ...
+# Subtest: navigation observations describe the waypoint, not the insect
+ok 35 - navigation observations describe the waypoint, not the insect
+  ---
+  duration_ms: 0.577012
+  type: 'test'
+  ...
+# Subtest: no target track means no pursuit command
+ok 36 - no target track means no pursuit command
+  ---
+  duration_ms: 0.197342
+  type: 'test'
+  ...
+# Subtest: safety filter cancels pursuit when target enters a person exclusion
+ok 37 - safety filter cancels pursuit when target enters a person exclusion
+  ---
+  duration_ms: 0.606897
+  type: 'test'
+  ...
+# Subtest: safety filter changes an imminent collision command
+ok 38 - safety filter changes an imminent collision command
+  ---
+  duration_ms: 0.356603
+  type: 'test'
+  ...
+# Subtest: invalid actions are rejected without mutating time
+ok 39 - invalid actions are rejected without mutating time
+  ---
+  duration_ms: 1.044587
+  type: 'test'
+  ...
+# Subtest: timeout is truncation and terminal steps are idempotent
+ok 40 - timeout is truncation and terminal steps are idempotent
+  ---
+  duration_ms: 23.334975
+  type: 'test'
+  ...
+# Subtest: near-miss counter uses current clearance rather than a historical minimum
+ok 41 - near-miss counter uses current clearance rather than a historical minimum
+  ---
+  duration_ms: 0.527399
+  type: 'test'
+  ...
+# Subtest: snapshot is detached and electrical activation is impossible
+ok 42 - snapshot is detached and electrical activation is impossible
+  ---
+  duration_ms: 0.346058
+  type: 'test'
+  ...
+# Subtest: batch of seeded episodes terminates with finite metrics
+ok 43 - batch of seeded episodes terminates with finite metrics
+  ---
+  duration_ms: 367.579911
+  type: 'test'
+  ...
+# Subtest: network has seven finite action values and validates observations
+ok 44 - network has seven finite action values and validates observations
+  ---
+  duration_ms: 2.078825
+  type: 'test'
+  ...
+# Subtest: checkpoint round trip preserves policy exactly
+ok 45 - checkpoint round trip preserves policy exactly
+  ---
+  duration_ms: 2.847
+  type: 'test'
+  ...
+# Subtest: untrusted model imports reject shape, schema, nonfinite and extreme weights
+ok 46 - untrusted model imports reject shape, schema, nonfinite and extreme weights
+  ---
+  duration_ms: 0.724499
+  type: 'test'
+  ...
+# Subtest: failed import leaves previous model unchanged
+ok 47 - failed import leaves previous model unchanged
+  ---
+  duration_ms: 1.03156
+  type: 'test'
+  ...
+# Subtest: learning performs real weight updates, with finite loss
+ok 48 - learning performs real weight updates, with finite loss
+  ---
+  duration_ms: 20.457327
+  type: 'test'
+  ...
+# Subtest: identical training inputs reproduce identical weights
+ok 49 - identical training inputs reproduce identical weights
+  ---
+  duration_ms: 12.838368
+  type: 'test'
+  ...
+# Subtest: biological laboratory worker accepts controls and exports force-driven traces
+ok 50 - biological laboratory worker accepts controls and exports force-driven traces
+  ---
+  duration_ms: 240.914861
+  type: 'test'
+  ...
+# Subtest: training worker performs end-to-end biological-opponent learning and held-out evaluation
+ok 51 - training worker performs end-to-end biological-opponent learning and held-out evaluation
+  ---
+  duration_ms: 14200.122696
+  type: 'test'
+  ...
+1..51
+# tests 51
+# suites 0
+# pass 51
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14657.956316
