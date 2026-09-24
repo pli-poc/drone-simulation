@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+	<testcase name="published reference dimensions and units are explicit" time="0.000608" classname="test"/>
+	<testcase name="trim solves cycle-average lift equal to weight without altering gravity" time="0.001319" classname="test"/>
+	<testcase name="symmetric wings have zero cycle-average torque" time="0.000981" classname="test"/>
+	<testcase name="asymmetric wing commands create roll, pitch, yaw moments with correct signs" time="0.041184" classname="test"/>
+	<testcase name="wing force varies within the beat; no constant artificial hover force" time="0.000240" classname="test"/>
+	<testcase name="hover remains bounded for two seconds with unit quaternion" time="0.268517" classname="test"/>
+	<testcase name="wing shutdown causes gravity-driven descent" time="0.008509" classname="test"/>
+	<testcase name="force-driven body can steer laterally, not just replay forward flight" time="0.132784" classname="test"/>
+	<testcase name="half timestep gives consistent one-second endpoint" time="0.159243" classname="test"/>
+	<testcase name="frequency and mass experiments remain bounded across documented ranges" time="0.116199" classname="test"/>
+	<testcase name="visual expansion responds to an approaching object" time="0.000589" classname="test"/>
+	<testcase name="occlusion prevents a visible threat cue" time="0.000343" classname="test"/>
+	<testcase name="delayed vision does not trigger escape before sensory delivery" time="0.004324" classname="test"/>
+	<testcase name="unrehearsed left and right looms produce opposite reactive escapes" time="0.077120" classname="test"/>
+	<testcase name="visual ablation removes visual escape but does not disable flight" time="0.036545" classname="test"/>
+	<testcase name="a physical gust still affects the fly with vision disabled" time="0.012092" classname="test"/>
+	<testcase name="rate-feedback stabilizer recovers from roll impulse" time="0.056961" classname="test"/>
+	<testcase name="biological experiment export retains configuration, stimuli and actual physics" time="0.001628" classname="test"/>
+	<testcase name="biological opponent is seeded and reproducible" time="0.065142" classname="test"/>
+	<testcase name="drone observation dimension remains 19 and contains no insect internal state" time="0.005921" classname="test"/>
+	<testcase name="drone learner updates against the independent biological opponent" time="0.456884" classname="test"/>
+	<testcase name="insect obstacle contact is recorded, not silently bounced" time="0.000459" classname="test"/>
+	<testcase name="invalid physics inputs are rejected and exposed config is bounded" time="0.000309" classname="test"/>
+	<testcase name="biological snapshots cannot mutate internal wing forces" time="0.000224" classname="test"/>
+	<testcase name="RNG is deterministic, finite and bounded" time="0.004317" classname="test"/>
+	<testcase name="configuration sanitizes invalid inputs and bounds physical knobs" time="0.000385" classname="test"/>
+	<testcase name="ray slab handles misses, parallel rays, inside starts and segment bounds" time="0.000227" classname="test"/>
+	<testcase name="swept collision detects tunneling and complete vehicle envelope" time="0.000172" classname="test"/>
+	<testcase name="continuous relative contact handles crossings and degenerate segments" time="0.000182" classname="test"/>
+	<testcase name="all scenario spawns are collision free" time="0.000491" classname="test"/>
+	<testcase name="sensor latency prevents future observations and expires lost tracks" time="0.000308" classname="test"/>
+	<testcase name="occlusion blocks target observations" time="0.000143" classname="test"/>
+	<testcase name="independent seeded episodes replay exactly" time="0.129808" classname="test"/>
+	<testcase name="one control step is six physics substeps and produces 19 finite observations" time="0.000775" classname="test"/>
+	<testcase name="navigation observations describe the waypoint, not the insect" time="0.000339" classname="test"/>
+	<testcase name="no target track means no pursuit command" time="0.000110" classname="test"/>
+	<testcase name="safety filter cancels pursuit when target enters a person exclusion" time="0.000633" classname="test"/>
+	<testcase name="safety filter changes an imminent collision command" time="0.000223" classname="test"/>
+	<testcase name="invalid actions are rejected without mutating time" time="0.000306" classname="test"/>
+	<testcase name="timeout is truncation and terminal steps are idempotent" time="0.019350" classname="test"/>
+	<testcase name="near-miss counter uses current clearance rather than a historical minimum" time="0.000282" classname="test"/>
+	<testcase name="snapshot is detached and electrical activation is impossible" time="0.000189" classname="test"/>
+	<testcase name="batch of seeded episodes terminates with finite metrics" time="0.168824" classname="test"/>
+	<testcase name="network has seven finite action values and validates observations" time="0.001449" classname="test"/>
+	<testcase name="checkpoint round trip preserves policy exactly" time="0.003579" classname="test"/>
+	<testcase name="untrusted model imports reject shape, schema, nonfinite and extreme weights" time="0.000479" classname="test"/>
+	<testcase name="failed import leaves previous model unchanged" time="0.001864" classname="test"/>
+	<testcase name="learning performs real weight updates, with finite loss" time="0.064424" classname="test"/>
+	<testcase name="identical training inputs reproduce identical weights" time="0.008077" classname="test"/>
+	<testcase name="biological laboratory worker accepts controls and exports force-driven traces" time="0.160943" classname="test"/>
+	<testcase name="training worker performs end-to-end biological-opponent learning and held-out evaluation" time="6.092004" classname="test"/>
+	<!-- tests 51 -->
+	<!-- suites 0 -->
+	<!-- pass 51 -->
+	<!-- fail 0 -->
+	<!-- cancelled 0 -->
+	<!-- skipped 0 -->
+	<!-- todo 0 -->
+	<!-- duration_ms 6472.216416 -->
+</testsuites>

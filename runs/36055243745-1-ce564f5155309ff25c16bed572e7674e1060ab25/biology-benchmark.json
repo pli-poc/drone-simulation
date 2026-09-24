@@ -1,0 +1,212 @@
+{
+  "schema": "mosquito-drone-lab/biological-benchmark@1",
+  "commit": "ce564f5155309ff25c16bed572e7674e1060ab25",
+  "profile": {
+    "id": "drosophila-rom-v1",
+    "species": "Drosophila melanogaster",
+    "mass": 9.83e-7,
+    "bodyLength": 0.00297,
+    "span": 0.00604,
+    "frequency": 218,
+    "wingLength": 0.0025,
+    "wingArea": 0.0000022,
+    "airDensity": 1.225,
+    "CL": 1.8,
+    "CD0": 0.12,
+    "CD90": 2.5
+  },
+  "created": "2026-09-24T20:31:29.562Z",
+  "physics": {
+    "simulatedSeconds": 1,
+    "wallSeconds": 0.134612921,
+    "simulatedSecondsPerWallSecond": 7.428707382406478,
+    "dt": 0.0002,
+    "steps": 5000
+  },
+  "hover": {
+    "endpoint": [
+      4.30656372564766e-17,
+      1.5010772905818854,
+      -0.00011254785671434765
+    ],
+    "tilt": 0.003248349474365806,
+    "meanLiftOverWeight": 1.004190556901003
+  },
+  "stimuli": [
+    {
+      "vision": true,
+      "side": -1,
+      "escapes": 1,
+      "endpoint": [
+        0.042200089976770654,
+        1.5124043058499599,
+        -0.01440328314345809
+      ],
+      "tilt": 0.022432330960153145
+    },
+    {
+      "vision": true,
+      "side": 1,
+      "escapes": 1,
+      "endpoint": [
+        -0.04220008997677066,
+        1.5124043058499599,
+        -0.014403283143458097
+      ],
+      "tilt": 0.022432330960153145
+    },
+    {
+      "vision": false,
+      "side": -1,
+      "escapes": 0,
+      "endpoint": [
+        -1.8983194866178795e-17,
+        1.5004654785421854,
+        -0.00006419817962071859
+      ],
+      "tilt": 0.008417322173339799
+    },
+    {
+      "vision": false,
+      "side": 1,
+      "escapes": 0,
+      "endpoint": [
+        -1.8983194866178795e-17,
+        1.5004654785421854,
+        -0.00006419817962071859
+      ],
+      "tilt": 0.008417322173339799
+    }
+  ],
+  "trials": [
+    {
+      "scenario": "arena",
+      "seed": 42,
+      "outcome": "contact",
+      "contacts": 1,
+      "collisions": 0,
+      "interventions": 0,
+      "nearMissSteps": 0,
+      "minClearance": 0.8637878919749422,
+      "clearance": 0.8979287043606909,
+      "pathLength": 3.630341796401981,
+      "return": 13.79988595336605,
+      "trackingSteps": 43,
+      "steps": 43,
+      "insectCollisions": 0
+    },
+    {
+      "scenario": "arena",
+      "seed": 193,
+      "outcome": "contact",
+      "contacts": 1,
+      "collisions": 0,
+      "interventions": 0,
+      "nearMissSteps": 0,
+      "minClearance": 0.9199999999999999,
+      "clearance": 0.9467974756804214,
+      "pathLength": 3.2179359278742834,
+      "return": 13.761295362807282,
+      "trackingSteps": 32,
+      "steps": 32,
+      "insectCollisions": 0
+    },
+    {
+      "scenario": "home",
+      "seed": 42,
+      "outcome": "contact",
+      "contacts": 1,
+      "collisions": 0,
+      "interventions": 0,
+      "nearMissSteps": 0,
+      "minClearance": 0.8370648435249461,
+      "clearance": 0.8979287043606909,
+      "pathLength": 3.630341796401981,
+      "return": 13.79988595336605,
+      "trackingSteps": 43,
+      "steps": 43,
+      "insectCollisions": 0
+    },
+    {
+      "scenario": "home",
+      "seed": 193,
+      "outcome": "contact",
+      "contacts": 1,
+      "collisions": 0,
+      "interventions": 0,
+      "nearMissSteps": 0,
+      "minClearance": 0.8019148090151254,
+      "clearance": 0.9467974756804214,
+      "pathLength": 3.2179359278742834,
+      "return": 13.761295362807282,
+      "trackingSteps": 32,
+      "steps": 32,
+      "insectCollisions": 0
+    },
+    {
+      "scenario": "dynamic",
+      "seed": 42,
+      "outcome": "timeout",
+      "contacts": 0,
+      "collisions": 0,
+      "interventions": 34,
+      "nearMissSteps": 0,
+      "minClearance": 0.9199999999999999,
+      "clearance": 1.0717623612705856,
+      "pathLength": 0.5307567370605767,
+      "return": -0.6300299733158492,
+      "trackingSteps": 40,
+      "steps": 50,
+      "insectCollisions": 0
+    },
+    {
+      "scenario": "dynamic",
+      "seed": 193,
+      "outcome": "timeout",
+      "contacts": 0,
+      "collisions": 0,
+      "interventions": 38,
+      "nearMissSteps": 0,
+      "minClearance": 0.9199999999999999,
+      "clearance": 0.9199999999999999,
+      "pathLength": 0,
+      "return": -2.1944020183039616,
+      "trackingSteps": 39,
+      "steps": 50,
+      "insectCollisions": 0
+    },
+    {
+      "scenario": "passage",
+      "seed": 42,
+      "outcome": "timeout",
+      "contacts": 0,
+      "collisions": 0,
+      "interventions": 0,
+      "nearMissSteps": 0,
+      "minClearance": 0.7599999999999998,
+      "clearance": 0.7599999999999998,
+      "pathLength": 0,
+      "return": 0.04762810406865343,
+      "trackingSteps": 0,
+      "steps": 50,
+      "insectCollisions": 0
+    },
+    {
+      "scenario": "passage",
+      "seed": 193,
+      "outcome": "timeout",
+      "contacts": 0,
+      "collisions": 0,
+      "interventions": 0,
+      "nearMissSteps": 0,
+      "minClearance": 0.7599999999999998,
+      "clearance": 0.7599999999999998,
+      "pathLength": 0,
+      "return": -0.29440201830396134,
+      "trackingSteps": 0,
+      "steps": 50,
+      "insectCollisions": 0
+    }
+  ],
+  "limitations": "Numerical and software regression evidence only. No empirical biological trajectory validation. Oracle drone map and engineered fly controller."
+}
