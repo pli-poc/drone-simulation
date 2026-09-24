@@ -1,0 +1,145 @@
+name: Verify, record and deploy
+
+on:
+  push:
+    branches: [main, 'feat/**', 'fix/**']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - name: Install development tooling
+        run: |
+          npm ci --ignore-scripts
+          python -m pip install playwright==1.57.0
+          python -m playwright install --with-deps chromium
+      - name: Unit and regression tests
+        run: |
+          mkdir -p test-results
+          node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=test-results/unit.xml tests/*.test.mjs
+      - name: Browser tests and screenshots
+        run: |
+          set -o pipefail
+          python tests/browser_smoke.py 2>&1 | tee test-results/browser.log
+      - name: Deterministic scenario benchmark
+        run: npm run benchmark
+      - name: Build static site
+        run: npm run build
+      - name: Record verification summary
+        if: always()
+        env:
+          VERIFY_STATUS: ${{ job.status }}
+        run: python scripts/test-summary.py
+      - name: Upload test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: test-results/
+          retention-days: 90
+      - name: Upload site artifact
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist/
+
+  record-history:
+    needs: verify
+    if: always() && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      actions: read
+    concurrency:
+      group: test-history
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: test-history
+      - uses: actions/download-artifact@v4
+        with:
+          name: evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/evidence
+      - name: Append durable per-run test record
+        env:
+          EVIDENCE: ${{ runner.temp }}/evidence
+          RUN_ID: ${{ github.run_id }}
+          ATTEMPT: ${{ github.run_attempt }}
+          TESTED_SHA: ${{ github.sha }}
+        run: |
+          folder="runs/${RUN_ID}-${ATTEMPT}-${TESTED_SHA}"
+          mkdir -p "$folder"
+          for file in summary.json summary.md unit.xml browser-results.json benchmark.json; do
+            if [ -f "$EVIDENCE/$file" ]; then cp "$EVIDENCE/$file" "$folder/$file"; fi
+          done
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add runs/
+          if ! git diff --cached --quiet; then
+            git commit -m "test-results: ${TESTED_SHA} run ${RUN_ID}/${ATTEMPT}"
+            git push origin HEAD:test-history
+          fi
+
+  deploy:
+    needs: [verify, record-history]
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Publish verified artifact
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Verify public deployment and exact commit
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+          EXPECTED_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import json, os, time, urllib.request
+          base=os.environ['PAGE_URL'].rstrip('/')+'/'
+          for attempt in range(18):
+              try:
+                  req=urllib.request.Request(base+'build.json?run='+os.environ['EXPECTED_SHA'],headers={'Cache-Control':'no-cache'})
+                  data=json.load(urllib.request.urlopen(req,timeout=20))
+                  if data['commit']!=os.environ['EXPECTED_SHA']:
+                      raise ValueError('Previous build is still being served')
+                  html=urllib.request.urlopen(base,timeout=20).read().decode()
+                  assert 'Mosquito Drone Lab' in html
+                  for path in ['src/workers/simulation.worker.js','docs/EXECUTION-BRIEF.md']:
+                      assert urllib.request.urlopen(base+path,timeout=20).status==200
+                  print('Verified live URL:',base,'commit:',data['commit'])
+                  with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
+                      f.write('## Public deployment verified\n\n'+base+'\n\nCommit: `'+data['commit']+'`\n')
+                  break
+              except Exception:
+                  if attempt==17:raise
+                  time.sleep(10)
+          PY
