@@ -1,55 +1,43 @@
 # Mosquito Drone Lab
 
-A browser-local 3D indoor drone simulation and residual-policy learning laboratory.
+Browser-local full-connectome neural flight, physical insect mechanics and an independent drone-learning laboratory.
 
-**Site:** https://pli-poc.github.io/drone-simulation/  
-**Execution brief:** [docs/EXECUTION-BRIEF.md](docs/EXECUTION-BRIEF.md)  
-**Commit history:** https://github.com/pli-poc/drone-simulation/commits/main/  
-**Tests/deployments:** https://github.com/pli-poc/drone-simulation/actions  
-**Durable test records:** https://github.com/pli-poc/drone-simulation/tree/test-history
+**Whole-CNS laboratory:** https://pli-poc.github.io/drone-simulation/neural.html  
+**Drone with neural opponent:** https://pli-poc.github.io/drone-simulation/?insect=neural  
+**Mechanical comparison laboratory:** https://pli-poc.github.io/drone-simulation/biology.html  
+**Complete master brief:** [docs/EXECUTION-BRIEF.md](docs/EXECUTION-BRIEF.md)
 
-## Run locally
+## What runs
 
-Requires Node 22 or newer for development. The deployed site has **no runtime packages, external CDN, Python backend, cloud model, login or API key**.
+The neural option loads the original MaleCNS v1.0 graph: **165,122 Traced neurons**, **25,563,197 neuron-pair connections**, representing **124,025,046 synapses**. No additional neuron/edge sampling or strength threshold is used. Modeled LIF dynamics propagate sensory input through that real wiring, and actual output spikes feed an explicit motor adapter and a force-integrated fly.
+
+The fly and drone have different controllers. The drone keeps its own 19/24/7 residual DQN; the insect's neural state is not a drone observation. The previous procedural and engineered-mechanics opponents remain selectable comparison modes.
+
+**Not a recovered living brain or a validated mosquito.** Point-neuron dynamics, synthetic sensory encoding, motor decoding and flight stabilization remain engineering models. Unknown/neuromodulatory outgoing efficacy is zero in this initial model: 4,143 neurons and 1,023,493 connections are affected but remain in the stored graph. Read [the neural model card](docs/NEURAL-MODEL.md), [mechanical model card](docs/BIOLOGICAL-MODEL.md) and [claim register](docs/CLAIM-REGISTER.json).
+
+## Use the application
+
+Open the whole-CNS laboratory and choose **Load full MaleCNS connectome**. The graph is about 80.2 MB compressed and 208.5 MB decoded, with additional runtime memory. Desktop use is recommended. Baseline visitors do not download it. There is no Python backend, account, API key, remote model or runtime CDN.
+
+Use **Approach from left/right**, **Advance 50 ms**, or **Run**. Disable vision, named populations, synaptic transmission, motor readout, stabilization or wings to compare causal effects. Reset before comparing conditions. Neural flashes represent actual computed spikes at original soma coordinates, not decorative activity. Export records include source identities, model parameters, per-neuron spike totals and bounded trace tails with limits disclosed.
+
+The drone trainer explicitly reports the number of held-out seeds: 12 normally, two for the initial full-CNS mode. That small neural comparison is an integration experiment, not a statistical claim of better interception. Imports are weights-only warm starts; browser storage is not archival storage.
+
+## Develop and reproduce
 
 ```bash
 npm ci
 npm test
-npm run benchmark
+# Build-time scientific tooling only; never a visitor-installed backend.
+python -m pip install pyarrow==21.0.0 pandas==2.3.3
+python scripts/prepare-neural.py
+npm run benchmark:neural
 npm run dev
 ```
 
-Open http://127.0.0.1:4173/drone-simulation/ . `npm run build` produces `dist/` for GitHub Pages.
+The source conversion downloads hash-pinned official tables and builds same-origin browser assets. About 1.1 GB of original tables are cached locally. `npm run build` packages the website and prepared assets into `dist/`. Node 22+ is required for developer scripts.
 
-## Biological flight extension (v0.2)
-
-Open `biology.html` through the local server for the magnified force-driven fruit-fly lab. Use 1/50× slow motion to inspect the wings. Switch to 1× to test hover, forward flight, looms, gusts, wing shutdown and angular-rate feedback. Export the actual experiment trace.
-
-Choose **Train the drone against this fly** to open the indoor simulator with the biological opponent selected. The drone learns its own residual policy; the insect controller stays fixed. The original procedural opponent is still selectable.
-
-This is a **new reduced-order mechanics implementation**, not a port of the complete MuJoCo `flybody` model or a whole-brain controller. See [model equations, provenance and limitations](docs/BIOLOGICAL-MODEL.md). Published reference size/mass/frequency do not validate the assumed aerodynamics or escape controller.
-
-```bash
-npm run benchmark:biology
-```
-
-The test suite contains 51 unit/regression checks and seven configured Chromium integration cases. Check actual run records for pass/fail status; the presence of a test is not evidence that it passed.
-
-## Use the lab
-
-Choose an arena/home scenario, change sensor and movement assumptions, inspect tracks/ranges/clearance, and compare the conventional controller with a locally trained residual DQN. Start learning pauses the viewer, runs real weight updates in another worker, then evaluates both frozen policies on the same 12 held-out seeds. Apply the learned policy explicitly. Export/import weights and export session traces plus training/evaluation data as JSON.
-
-Weights are saved locally when browser storage permits. Weight imports are warm starts, not exact training resumption. Export important results yourself; browser storage can be cleared.
-
-## Scope and honesty
-
-This is the **first executable prototype**, not a completed research implementation or a physical mosquito-control product. It uses acceleration-limited drone motion, a selectable procedural or reduced-order wing-driven fruit-fly opponent, synthetic detection outputs and an oracle-map safety filter. There is no full fly brain, calibrated mosquito aerodynamics, camera recognition, SLAM, battery model or confirmed electrical effectiveness yet. The execution brief contains explicit follow-on work packages.
-
-**Known benchmark failure:** the initial moving-occupant baseline collides in seeds 42 and 234 of the recorded 12-second scenario batch. This release is an experimental environment, not a solved indoor navigator.
-
-Contact is a simulated geometric event. Electrical activation is impossible in this application. No software test establishes safe operation in a home with people or animals.
-
-## Verification and history
+For real browser checks:
 
 ```bash
 python -m pip install playwright==1.57.0
@@ -57,6 +45,12 @@ python -m playwright install chromium
 npm run test:browser
 ```
 
-Python/Playwright are developer-only test tools. CI runs unit and browser checks, creates benchmark evidence, records compact results on `test-history`, and deploys successful main builds. Detailed screenshots and traces are retained as workflow artifacts for 90 days. See [test records](docs/TEST-RECORDS.md), [development history](docs/DEVELOPMENT-HISTORY.md), and [architecture decisions](docs/DECISIONS.md).
+## Evidence, history and remaining work
 
-The footer and `build.json` identify the deployed commit. Development occurs in reviewable commits; publishing does not rewrite history.
+[Commit history](https://github.com/pli-poc/drone-simulation/commits/main/) · [Pull requests](https://github.com/pli-poc/drone-simulation/pulls?q=is%3Apr) · [Actions](https://github.com/pli-poc/drone-simulation/actions) · [Durable test records](https://github.com/pli-poc/drone-simulation/tree/test-history).
+
+CI verifies original sources, builds full assets, runs numerical/worker/browser tests, records scenario/biology/neural benchmarks and publishes successful main builds. The public exact commit is checked after deployment. Compact evidence is committed to `test-history`; detailed screenshots/traces have 90-day artifact retention. Preserve failures and merge commits; do not squash the project history.
+
+Current navigation remains an exact-map/synthetic-sensor benchmark. Known moving-occupant failures remain tracked in issue #2. Complete physiological calibration, full articulated upstream body integration, natural mosquito behaviour and physical transfer remain in issue #3 and the master brief. Electrical activation is impossible. Geometric contact does not mean electrocution.
+
+The whole-brain requirement was previously deferred without the user's agreement; the master brief records that correction explicitly. A baseline increment, large neuron count or passing software test must not be presented as completion of empirical biological validation.
