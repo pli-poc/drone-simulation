@@ -1,0 +1,56 @@
+{
+  "schema": "mosquito-drone-lab/verification@1",
+  "commit": "b34916132459d04d5a10dd85c5c97674bc8c6d94",
+  "run": "36054102832",
+  "attempt": "1",
+  "ref": "refs/heads/main",
+  "event": "push",
+  "created": "2026-09-24T20:21:14.818200+00:00",
+  "passed": true,
+  "unit": {
+    "available": true,
+    "tests": 51,
+    "failures": 0,
+    "errors": 0
+  },
+  "browser": {
+    "available": true,
+    "tests": 7,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": true,
+    "failureDetails": []
+  },
+  "benchmark": {
+    "available": true,
+    "episodes": 16,
+    "wallSeconds": 0.339939186,
+    "collisions": 2,
+    "contacts": 1
+  },
+  "biology": {
+    "available": true,
+    "profile": "drosophila-rom-v1",
+    "episodes": 8,
+    "droneCollisions": 0,
+    "insectCollisions": 0,
+    "physics": {
+      "simulatedSeconds": 1,
+      "wallSeconds": 0.22844542899999998,
+      "simulatedSecondsPerWallSecond": 4.377413040731054,
+      "dt": 0.0002,
+      "steps": 5000
+    },
+    "hover": {
+      "endpoint": [
+        4.30656372564766e-17,
+        1.5010772905818854,
+        -0.00011254785671434765
+      ],
+      "tilt": 0.003248349474365806,
+      "meanLiftOverWeight": 1.004190556901003
+    }
+  },
+  "limitations": "Software verification only; not biological or physical safety validation."
+}
