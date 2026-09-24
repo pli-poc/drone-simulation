@@ -1,0 +1,67 @@
+import {SceneView} from './view/scene.js';
+import {DEFAULTS,config,scene,SCENARIOS} from './core/world.js';
+import {Network} from './learning/dqn.js';
+const $=id=>document.getElementById(id),numeric=['seed','duration','speed','range','latency','dropout','agility','wind'];
+let view,sim,trainer,current=config(),snapshot=null,running=true,checkpoint=null,training=false,history=[],evaluation=null,record=[],lastEpisode=0,lastSafety='',lastTime=-1;
+const initial=document.title,storageKey='mosquito-drone-lab-policy-v1';
+function error(message){$('error').textContent=message;$('error').hidden=false;log(message);}
+function log(message){const li=document.createElement('li'),time=document.createElement('time'),text=document.createElement('span');time.textContent=new Date().toLocaleTimeString('en-GB',{hour12:false});text.textContent=message;li.append(time,text);$('event-log').prepend(li);while($('event-log').children.length>30)$('event-log').lastChild.remove();}
+function writeMetric(id,value,unit=''){const el=$(id);el.textContent=value;if(unit){const small=document.createElement('small');small.textContent=unit;el.append(small);}}
+function labels(){if(!view?.snapshot)return;for(const [id,p]of [['drone-label',view.snapshot.drone.p],['insect-label',view.snapshot.insect.p]]){const q=view.gl.project(p),el=$(id);el.hidden=!q.visible;el.style.transform=`translate(${Math.min(Math.max(6,q.x+12),$('scene').clientWidth-122)}px,${Math.max(8,q.y-27)}px)`;}}
+function send(type,extra={}){sim?.postMessage({type,...extra});}
+function units(){for(const key of ['speed','range','latency','dropout','agility','wind']){const v=Number($(key).value);$(key+'-value').textContent=key==='speed'?v.toFixed(2)+' m/s':key==='range'?v.toFixed(1)+' m':key==='latency'?v+' ms':key==='dropout'?Math.round(v*100)+'%':v.toFixed(2);}}
+function configure(){const raw={scenario:$('scenario').value,task:$('task').value};for(const key of numeric)raw[key]=Number($(key).value);current=config(raw);for(const key of numeric)$(key).value=current[key];units();view.setWorld(scene(current.scenario));send('configure',{config:current});lastEpisode=0;lastTime=-1;record=[];$('scene-name').textContent=SCENARIOS[current.scenario];log(`Scenario reset: ${SCENARIOS[current.scenario]} · seed ${current.seed}`);}
+function update(m){
+  snapshot=m.snapshot;running=m.running;view.accept(snapshot);document.body.dataset.ready='true';$('pause').textContent=running?'Ⅱ Pause':'▶ Run';$('run-state').textContent=running?'RUNNING':'PAUSED';$('live-dot').classList.toggle('warning',!running);
+  $('episode').textContent=`EP ${String(m.episode).padStart(3,'0')}`;$('clock').textContent=snapshot.time.toFixed(1).padStart(4,'0')+' s';
+  writeMetric('m-speed',snapshot.speed.toFixed(2),'m/s');writeMetric('m-distance',snapshot.separation.toFixed(2),'m');writeMetric('m-clearance',snapshot.metrics.clearance===10?'—':snapshot.metrics.clearance.toFixed(2),'m');writeMetric('m-interventions',String(snapshot.metrics.interventions));
+  $('tracking-state').textContent=snapshot.track?'Track acquired':'Searching';$('tracking-detail').textContent=snapshot.track?`${Math.round(snapshot.track.confidence*100)}% confidence · ${Math.round(snapshot.track.age*1000)} ms age`:'No reliable target observation';
+  $('contacts').textContent=m.totalContacts+snapshot.metrics.contacts;$('safety-state').textContent=snapshot.safety.reason;$('safety-indicator').classList.toggle('warning',snapshot.safety.intervention);
+  for(let i=0;i<6;i++){const row=$('range-bars').children[i];row.querySelector('i').style.width=`${snapshot.ranges[i]/current.range*100}%`;row.querySelector('output').textContent=snapshot.ranges[i].toFixed(1);}
+  $('outcome').hidden=!snapshot.done;if(snapshot.done)$('outcome').textContent=snapshot.outcome==='contact'?'Controlled contact · proxy only':snapshot.outcome==='collision'?'Collision recorded':'Episode complete';
+  if(m.episode!==lastEpisode){lastEpisode=m.episode;log(`Episode ${m.episode} · ${m.controller} · seed ${snapshot.config.seed}`);}
+  if(snapshot.safety.reason!==lastSafety&&snapshot.safety.reason!=='CLEAR'){log(snapshot.safety.reason);lastSafety=snapshot.safety.reason;}else if(snapshot.safety.reason==='CLEAR')lastSafety='CLEAR';
+  if(snapshot.time!==lastTime){record.push({episode:m.episode,...snapshot});if(record.length>1800)record.shift();lastTime=snapshot.time;}
+}
+function download(name,value){const blob=new Blob([JSON.stringify(value,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+function usePolicy(){if(!checkpoint)return;send('policy',{checkpoint});$('controller').value='learned';log('Learned residual policy active. Safety filter unchanged.');}
+function enablePolicy(value){new Network().load(value);checkpoint=value;$('learned-option').disabled=false;$('apply-policy').disabled=false;$('export-policy').disabled=false;try{localStorage.setItem(storageKey,JSON.stringify(value));}catch{log('Local storage unavailable; export weights to keep them.');}}
+function trainingControls(value){training=value;$('train').hidden=value;$('cancel-train').hidden=!value;for(const el of document.querySelectorAll('.setup input,.setup select,#episodes,#import-policy'))el.disabled=value;document.title=value?'Training · Mosquito Drone Lab':initial;}
+function chart(){const canvas=$('learning-chart'),rect=canvas.getBoundingClientRect(),ratio=Math.min(devicePixelRatio||1,2);canvas.width=Math.max(1,rect.width*ratio);canvas.height=Math.max(1,rect.height*ratio);const ctx=canvas.getContext('2d');ctx.scale(ratio,ratio);const w=rect.width,h=rect.height;ctx.clearRect(0,0,w,h);ctx.strokeStyle='#233b49';ctx.lineWidth=1;for(let i=1;i<4;i++){ctx.beginPath();ctx.moveTo(0,h*i/4);ctx.lineTo(w,h*i/4);ctx.stroke();}
+  if(!history.length){ctx.fillStyle='#507486';ctx.font='9px Segoe UI';ctx.fillText('Run an experiment to see measured returns.',8,h/2);return;}
+  const values=history.map(r=>r.return),lo=Math.min(0,...values)-0.5,hi=Math.max(0,...values)+0.5;ctx.strokeStyle='#63e5c6';ctx.lineWidth=1.5;ctx.beginPath();values.forEach((v,i)=>{const x=5+i/Math.max(1,values.length-1)*(w-10),y=6+(hi-v)/(hi-lo)*(h-12);i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();
+  ctx.fillStyle='#78bca8';ctx.font='8px Segoe UI';ctx.fillText(values.at(-1).toFixed(2),Math.max(4,w-36),11);
+}
+function showEvaluation(result){evaluation=result;const node=$('benchmark');node.replaceChildren();const heading=document.createElement('div');heading.className='subheading';heading.textContent='HELD-OUT EVALUATION / 12 SEEDS';node.append(heading);
+  const table=document.createElement('table');for(const row of [['Controller','Contacts','Return'],['Baseline',`${result.baseline.results.filter(r=>r.contacts).length}/12`,result.baseline.meanReturn.toFixed(2)],['Learned',`${result.learned.results.filter(r=>r.contacts).length}/12`,result.learned.meanReturn.toFixed(2)]]){const tr=document.createElement('tr');row.forEach(text=>{const td=document.createElement(table.children.length?'td':'th');td.textContent=text;tr.append(td);});table.append(tr);}node.append(table);const small=document.createElement('small');small.textContent=`Collisions: ${result.baseline.collisions} baseline / ${result.learned.collisions} learned. Same layout; new seeds, not new homes.`;node.append(small);
+}
+function handleTraining(m){
+  if(m.type==='progress'){history.push(m.row);$('progress').max=m.episodes;$('progress').value=m.episode;$('updates').textContent=`${m.updates} UPDATES`;$('training-status').textContent=`Episode ${m.episode}/${m.episodes} · loss ${m.row.loss.toFixed(3)} · ${m.steps} steps`;chart();}
+  else if(m.type==='evaluating'){$('training-status').textContent=m.message;log('Training complete. Running held-out comparison.');}
+  else if(m.type==='complete'){enablePolicy(m.checkpoint);history=m.history;showEvaluation(m.evaluation);trainingControls(false);$('training-status').textContent=`Completed ${history.length} episodes; weights saved locally. Click Use learned policy to apply.`;log(`Learning completed: ${m.checkpoint.meta.updates} weight updates; held-out evaluation recorded.`);chart();}
+  else if(m.type==='cancelled'){trainingControls(false);$('training-status').textContent='Cancelled. Last completed checkpoint is unchanged.';log('Training cancelled.');}
+  else if(m.type==='error'){trainingControls(false);error('Training: '+m.message);}
+}
+try{
+  view=new SceneView($('scene'),labels);view.setWorld(scene(current.scenario));
+  for(const name of ['+X','−X','+Y','−Y','+Z','−Z']){const row=document.createElement('div');row.className='range-unit';const label=document.createElement('span');label.textContent=name;const meter=document.createElement('div');meter.className='range-meter';meter.append(document.createElement('i'));const out=document.createElement('output');out.textContent='0.0';row.append(label,meter,out);$('range-bars').append(row);}
+  sim=new Worker(new URL('./workers/simulation.worker.js',import.meta.url),{type:'module'});trainer=new Worker(new URL('./workers/training.worker.js',import.meta.url),{type:'module'});
+  sim.onmessage=({data:m})=>m.type==='snapshot'?update(m):m.type==='error'?error('Simulation: '+m.message):null;trainer.onmessage=({data:m})=>handleTraining(m);
+  for(const worker of [sim,trainer])worker.onerror=e=>{trainingControls(false);error('Worker failed: '+e.message);};
+  $('pause').onclick=()=>send('running',{value:!running});$('step').onclick=()=>send('step');$('reset').onclick=()=>{record=[];lastTime=-1;send('reset');log('Episode replayed with the same seed.');};$('rate').onchange=()=>send('rate',{value:Number($('rate').value)});
+  for(const key of ['scenario','task',...numeric]){$(key).addEventListener('change',configure);if($(key).type==='range')$(key).addEventListener('input',units);}
+  for(const key of ['trails','rays','envelope'])$(key).onchange=()=>view[key]=$(key).checked;
+  for(const key of ['orbit','top','follow'])$(key).onclick=()=>{view.mode=key;for(const b of ['orbit','top','follow'])$(b).classList.toggle('active',b===key);};
+  $('controller').onchange=()=>{$('controller').value==='learned'?usePolicy():send('policy',{checkpoint:null});};$('apply-policy').onclick=usePolicy;
+  $('train').onclick=()=>{trainingControls(true);send('running',{value:false});history=[];evaluation=null;chart();$('progress').value=0;$('training-status').textContent='Collecting episodes… Viewer paused to leave CPU time for learning.';$('benchmark').replaceChildren();log('Training started; existing weights are a warm start when present.');trainer.postMessage({type:'train',config:current,episodes:Number($('episodes').value),checkpoint});};
+  $('cancel-train').onclick=()=>trainer.postMessage({type:'cancel'});
+  $('export-policy').onclick=()=>checkpoint&&download('mosquito-drone-policy.json',checkpoint);
+  $('export-run').onclick=()=>download('mosquito-drone-experiment.json',{schema:'mosquito-drone-lab/experiment@1',build:$('build-link').dataset.commit||'local',config:current,activeController:$('controller').value,model:checkpoint,trainingHistory:history,evaluation,trace:record,traceLimit:1800,limitations:'Simulation only. Oracle-map filter; procedural insect; sensor-output proxy; electrical disabled.'});
+  $('import-policy').onclick=()=>$('policy-file').click();$('policy-file').onchange=async()=>{try{const file=$('policy-file').files[0];if(!file)return;if(file.size>200000)throw new Error('Policy file is too large (200 KB maximum).');enablePolicy(JSON.parse(await file.text()));log('Validated policy imported; activate it with Use learned policy.');$('training-status').textContent='Weights imported. Apply for playback or warm-start a new training run.';}catch(e){error('Import rejected: '+e.message);}finally{$('policy-file').value='';}};
+  try{const saved=localStorage.getItem(storageKey);if(saved){enablePolicy(JSON.parse(saved));log('Saved policy available. Baseline remains active.');}}catch{log('Saved policy could not be restored. Baseline remains active.');}
+  $('about').onclick=()=>$('model-card').showModal();$('close-about').onclick=()=>$('model-card').close();$('model-card').addEventListener('click',e=>{if(e.target===$('model-card')&&e.offsetX<0)$('model-card').close();});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){send('running',{value:false});log('Viewer paused while tab is hidden.');}});
+  $('scene').addEventListener('webglcontextlost',()=>{send('running',{value:false});error('Graphics context lost. Reload the page to restore the viewer; exported policies remain valid.');});
+  window.addEventListener('resize',chart);units();chart();log('Local simulation initialized. No hardware or electrical connection.');
+  fetch('./build.json').then(r=>{if(!r.ok)throw new Error('Build metadata unavailable');return r.json();}).then(b=>{const link=$('build-link');link.textContent=`v${b.version} / ${b.commit.slice(0,8)}`;link.dataset.commit=b.commit;if(b.commit!=='local')link.href=`https://github.com/pli-poc/drone-simulation/commit/${b.commit}`;}).catch(()=>{$('build-link').textContent='v0.1.0 / source build';});
+}catch(e){error(e.message);$('train').disabled=true;}

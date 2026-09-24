@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="A browser-local indoor drone simulation and reinforcement learning laboratory. Open source, reproducible, and simulation only.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<title>Mosquito Drone Lab · Browser simulation</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230a1219'/%3E%3Cpath d='M16 16L48 48M48 16L16 48' stroke='%2363e5c6' stroke-width='5'/%3E%3Ccircle cx='32' cy='32' r='11' fill='%2363e5c6'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="./styles.css"><script type="module" src="./src/app.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="./" aria-label="Mosquito Drone Lab home"><span class="brandmark">⌘</span><span>MOSQUITO<span class="brand-sub">DRONE LAB</span></span></a>
+  <div class="project-id">EXPERIMENT 001 <span>/</span> INDOOR AUTONOMY</div>
+  <nav aria-label="Project links"><a href="https://github.com/pli-poc/drone-simulation" target="_blank" rel="noopener">Repository ↗</a><a href="https://github.com/pli-poc/drone-simulation/commits/main/" target="_blank" rel="noopener">Commits ↗</a><a href="https://github.com/pli-poc/drone-simulation/actions" target="_blank" rel="noopener">Tests & builds ↗</a><button id="about" class="quiet">Model card</button></nav>
+</header>
+<main>
+  <div class="intro"><div><div class="eyebrow">BROWSER-NATIVE RESEARCH ENVIRONMENT</div><h1>Small drone. Complex world.</h1><p>Explore reactive flight, indoor navigation, and a drone policy that learns locally.</p></div><div class="local-badge"><span class="status-dot"></span>LOCAL COMPUTE<span>NO BACKEND · NO CLOUD MODEL</span></div></div>
+  <div id="error" class="error" role="alert" hidden></div>
+  <div class="workspace">
+    <aside class="panel setup">
+      <div class="panel-title"><span>01 / ENVIRONMENT</span><span class="tiny">CONFIGURE</span></div>
+      <label class="field">Scenario<select id="scenario"><option value="home">Furnished home</option><option value="arena">Open test arena</option><option value="dynamic">Moving occupant</option><option value="passage">Narrow passage</option></select></label>
+      <label class="field">Objective<select id="task"><option value="contact">Track & controlled contact</option><option value="navigation">Navigation only</option></select></label>
+      <div class="two-fields"><label class="field">Seed<input id="seed" type="number" min="1" max="2147483647" value="42"></label><label class="field">Episode / s<input id="duration" type="number" min="5" max="90" value="24"></label></div>
+      <div class="subheading">DRONE & SENSING</div>
+      <label class="slider-field"><span>Max. speed <output id="speed-value">1.35 m/s</output></span><input id="speed" type="range" min="0.3" max="2.4" step="0.05" value="1.35"></label>
+      <label class="slider-field"><span>Detection range <output id="range-value">5.5 m</output></span><input id="range" type="range" min="0.5" max="8" step="0.1" value="5.5"></label>
+      <label class="slider-field"><span>Target latency <output id="latency-value">80 ms</output></span><input id="latency" type="range" min="0" max="500" step="10" value="80"></label>
+      <label class="slider-field"><span>Sensor dropout <output id="dropout-value">4%</output></span><input id="dropout" type="range" min="0" max="0.8" step="0.01" value="0.04"></label>
+      <div class="subheading">INSECT & DISTURBANCE</div>
+      <label class="slider-field"><span>Escape response <output id="agility-value">0.65</output></span><input id="agility" type="range" min="0" max="1.5" step="0.05" value="0.65"></label>
+      <label class="slider-field"><span>Airflow proxy <output id="wind-value">0.12</output></span><input id="wind" type="range" min="0" max="0.6" step="0.01" value="0.12"></label>
+      <div class="note"><span class="note-icon">i</span><span>Procedural reactive insect.<br>No fly-brain model loaded.</span></div>
+      <a class="brief-link" href="./docs/EXECUTION-BRIEF.md" download>↓ Execution brief / Markdown</a>
+    </aside>
+    <section class="panel viewport-panel" aria-label="3D simulation">
+      <div class="viewport-toolbar"><span><span id="live-dot" class="status-dot"></span><strong id="run-state">RUNNING</strong><span class="toolbar-muted"> / </span><span id="scene-name">Furnished home</span></span><div class="camera-buttons" aria-label="Camera mode"><button id="orbit" class="active" title="Orbit view">Orbit</button><button id="top" title="Top view">Top</button><button id="follow" title="Follow drone">Follow</button></div></div>
+      <div class="viewport"><canvas id="scene" aria-label="Interactive three-dimensional simulation; drag to orbit, scroll to zoom"></canvas><div class="scene-corner"><span>8 × 6 × 3 m</span><span>CUTAWAY / FULL COLLISION WALLS</span></div><div id="drone-label" class="object-label drone-label">DRONE<span>01</span></div><div id="insect-label" class="object-label insect-label">INSECT<span>REACTIVE</span></div><div class="scene-legend"><span><i class="teal"></i>Drone path</span><span><i class="amber"></i>Insect path</span></div><div class="scene-help">Drag to orbit · Scroll to zoom · Insect marker enlarged</div><div id="outcome" class="outcome" hidden></div></div>
+      <div class="transport"><div class="transport-main"><button id="pause" class="primary compact">Ⅱ Pause</button><button id="step" title="Advance one control step">Step</button><button id="reset" title="Replay the same seed">↺ Reset</button><select id="rate" aria-label="Simulation speed"><option value="1">1× speed</option><option value="2">2× speed</option><option value="4">4× speed</option></select></div><div class="clock"><span id="episode">EP 001</span><strong id="clock">00.0 s</strong></div></div>
+      <div class="metrics"><div><span>DRONE SPEED</span><strong id="m-speed">0.00<small>m/s</small></strong></div><div><span>TARGET DISTANCE</span><strong id="m-distance">—<small>m</small></strong></div><div><span>CLEARANCE</span><strong id="m-clearance">—<small>m</small></strong></div><div><span>INTERVENTIONS</span><strong id="m-interventions">0</strong></div></div>
+      <div class="overlay-options"><label><input id="trails" type="checkbox" checked> Flight trails</label><label><input id="rays" type="checkbox"> Range rays</label><label><input id="envelope" type="checkbox"> Vehicle envelope</label><button id="export-run" class="quiet">Export run ↓</button></div>
+      <div class="safety-strip"><span id="safety-indicator" class="status-dot"></span><span id="safety-state">WAITING FOR TRACK</span><span>ORACLE-MAP FILTER · CONTACT PROXY ONLY</span></div>
+    </section>
+    <aside class="panel inspector">
+      <div class="panel-title"><span>02 / LOCAL LEARNING</span><span class="tag">DQN</span></div>
+      <h2>Teach the controller.</h2><p class="description">A small neural policy adds steering corrections to the baseline. The insect keeps its own controller.</p>
+      <div class="network"><div><strong>19</strong><span>OBSERVATIONS</span></div><i>→</i><div><strong>24</strong><span>HIDDEN UNITS</span></div><i>→</i><div><strong>7</strong><span>ACTIONS</span></div></div>
+      <label class="field">Active controller<select id="controller"><option value="baseline">Predictive baseline</option><option id="learned-option" value="learned" disabled>Learned residual policy</option></select></label>
+      <div class="training-controls"><label class="field">Training episodes<input id="episodes" type="number" min="1" max="300" value="60"></label><button id="train" class="primary">Start learning ↗</button><button id="cancel-train" hidden>Stop</button></div>
+      <progress id="progress" value="0" max="60" aria-label="Training progress"></progress><div id="training-status" class="training-status" role="status" aria-live="polite">Ready. Training runs in a separate worker.</div>
+      <div class="chart-head"><span>EPISODE RETURN</span><span id="updates">0 UPDATES</span></div><canvas id="learning-chart" aria-label="Training episode returns"></canvas>
+      <div class="benchmark" id="benchmark"><div class="subheading">HELD-OUT EVALUATION</div><p>After training: compare both frozen policies on the same 12 unseen seeds.</p></div>
+      <div class="policy-buttons"><button id="apply-policy" disabled>Use learned policy</button><button id="export-policy" disabled>Export weights ↓</button><button id="import-policy">Import weights ↑</button><input id="policy-file" type="file" accept=".json,application/json" hidden></div>
+      <div class="note subtle">Weight imports start a new training run; optimizer and replay state are not restored. Improvement is not guaranteed.</div>
+    </aside>
+  </div>
+  <div class="bottom-grid"><section class="panel telemetry"><div class="panel-title"><span>03 / SENSOR TELEMETRY</span><span class="tiny">DETECTION-OUTPUT PROXY</span></div><div class="sensor-row"><div class="tracking"><span>TARGET TRACK</span><strong id="tracking-state">Acquiring</strong><small id="tracking-detail">Waiting for observations</small></div><div id="range-bars" class="range-bars"></div><div class="contact-stat"><span>SIMULATED CONTACTS</span><strong id="contacts">0</strong><small>Neutralizations: 0 · Electrical: off</small></div></div></section><section class="panel log-panel"><div class="panel-title"><span>04 / EVENT LOG</span><span class="tiny">THIS SESSION</span></div><ol id="event-log" aria-label="Simulation events"></ol></section></div>
+  <footer><span><span class="status-dot"></span>SIMULATION ONLY <span class="footer-sep">/</span> No hardware connection. No claim of real-world safety or biological validation.</span><a id="build-link" href="https://github.com/pli-poc/drone-simulation/commits/main/">v0.1.0 / loading build</a></footer>
+</main>
+<dialog id="model-card"><div class="dialog-head"><div><div class="eyebrow">IMPLEMENTATION STATUS</div><h2>A laboratory, not a product claim.</h2></div><button id="close-about" aria-label="Close model card">×</button></div><p>This first release runs the simulation and actual neural-weight updates entirely in your browser. Rendering is separate from the simulation and training workers.</p><h3>Implemented</h3><p>Acceleration-limited flight, conservative collision geometry, four home/arena scenarios, reactive procedural insect, delayed/noisy target estimates, six range rays, baseline navigation, a residual DQN, deterministic seeds, weight import/export and held-out-seed comparison.</p><h3>Not yet implemented</h3><p>Six-degree-of-freedom rotor physics, calibrated mosquito aerodynamics, camera-image detection, estimated occupancy/SLAM, robust moving-obstacle prediction, battery/device models, a fruit-fly connectome, and physical electrical effectiveness. These are explicit work packages in the brief.</p><h3>Important shortcuts</h3><p>The safety filter uses the simulator's exact obstacle map. The insect has idealized proximity cues. Reward shaping uses ground truth. Training evaluation changes seeds, not home layouts. Visual wing and rotor motion are illustrative. Contact is not electrocution.</p><p>All software tests concern this implementation, not safe household deployment. No electrical system can be enabled from this application.</p><a href="./docs/EXECUTION-BRIEF.md" download>Download the complete browser-first execution brief ↓</a></dialog>
+</body></html>

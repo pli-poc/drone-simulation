@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Browser-local indoor drone simulation and residual-policy learning laboratory",
+  "description": "Dependency-free browser simulation and local residual-policy learning laboratory",
   "scripts": {
     "test": "node --test tests/*.test.mjs",
+    "test:browser": "python tests/browser_smoke.py",
+    "benchmark": "node scripts/benchmark.mjs",
     "build": "node scripts/build.mjs",
     "dev": "node scripts/serve.mjs"
   },
-  "dependencies": { "three": "0.180.0" },
   "engines": { "node": ">=22" }
 }
