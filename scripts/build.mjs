@@ -1,0 +1,13 @@
+import {mkdir,rm,cp,readFile,writeFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+const root=resolve(import.meta.dirname,'..'),dist=resolve(root,'dist');
+await rm(dist,{recursive:true,force:true});await mkdir(dist,{recursive:true});
+for(const p of ['index.html','styles.css','src','docs'])await cp(resolve(root,p),resolve(dist,p),{recursive:true});
+await mkdir(resolve(dist,'vendor/three'),{recursive:true});
+for(const file of ['three.module.js','three.core.js'])await cp(resolve(root,'node_modules/three/build',file),resolve(dist,'vendor/three',file));
+const controls=await readFile(resolve(root,'node_modules/three/examples/jsm/controls/OrbitControls.js'),'utf8');
+await writeFile(resolve(dist,'vendor/three/OrbitControls.js'),controls.replace(/from 'three'/g,"from './three.module.js'"));
+await cp(resolve(root,'node_modules/three/LICENSE'),resolve(dist,'vendor/three/LICENSE.txt'));
+await writeFile(resolve(dist,'.nojekyll'),'');
+await writeFile(resolve(dist,'build.json'),JSON.stringify({version:'0.1.0',commit:process.env.GITHUB_SHA||'local',built:new Date().toISOString()},null,2));
+console.log('Built dist/: same-origin assets, native modules, no runtime services.');
