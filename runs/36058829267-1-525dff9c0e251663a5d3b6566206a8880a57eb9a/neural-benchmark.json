@@ -1,0 +1,149 @@
+{
+  "schema": "mosquito-drone-lab/neural-benchmark@1",
+  "commit": "525dff9c0e251663a5d3b6566206a8880a57eb9a",
+  "dataset": "male-cns:v1.0",
+  "neurons": 165122,
+  "connections": 25563197,
+  "synapses": 124025046,
+  "graphSha256": "c1a42e90a87768c166c1dd43908065880d6c852440cb28544384ba2cef41343d",
+  "zeroEfficacyNeurons": 4143,
+  "zeroEfficacyConnections": 1023493,
+  "conditions": [
+    {
+      "condition": "left",
+      "simulatedSeconds": 0.2,
+      "wallSeconds": 0.48084881300000004,
+      "position": [
+        0.01996467344676549,
+        1.5011983425623245,
+        -0.017187569695182398
+      ],
+      "command": [
+        0.3320813686297811,
+        0.0435240653390091,
+        -0.30726720367493643
+      ],
+      "spikes": 27996,
+      "outputSpikes": 991,
+      "giantFiberSpikes": [
+        64,
+        27
+      ]
+    },
+    {
+      "condition": "right",
+      "simulatedSeconds": 0.2,
+      "wallSeconds": 0.46712925099999986,
+      "position": [
+        -0.019712985760616548,
+        1.501281132917128,
+        -0.017194524510002376
+      ],
+      "command": [
+        -0.32821543107524,
+        0.04446832477013475,
+        -0.307378875291921
+      ],
+      "spikes": 24422,
+      "outputSpikes": 953,
+      "giantFiberSpikes": [
+        32,
+        61
+      ]
+    },
+    {
+      "condition": "no-vision",
+      "simulatedSeconds": 0.2,
+      "wallSeconds": 0.034061770000000026,
+      "position": [
+        -8.79184354370469e-19,
+        1.5000741964399782,
+        -0.00013449480218193438
+      ],
+      "command": [
+        0,
+        0,
+        0
+      ],
+      "spikes": 0,
+      "outputSpikes": 0,
+      "giantFiberSpikes": [
+        0,
+        0
+      ]
+    },
+    {
+      "condition": "no-DNp01",
+      "simulatedSeconds": 0.2,
+      "wallSeconds": 0.461810931,
+      "position": [
+        -0.0001863138600892395,
+        1.500073085214437,
+        -0.0001344338005838747
+      ],
+      "command": [
+        0.004486935648344452,
+        -0.000014402314374636336,
+        -0.0000022164652082237093
+      ],
+      "spikes": 28410,
+      "outputSpikes": 889,
+      "giantFiberSpikes": [
+        0,
+        0
+      ]
+    },
+    {
+      "condition": "no-readout",
+      "simulatedSeconds": 0.2,
+      "wallSeconds": 0.43059827900000025,
+      "position": [
+        -8.79184354370469e-19,
+        1.5000741964399782,
+        -0.00013449480218193438
+      ],
+      "command": [
+        0,
+        0,
+        0
+      ],
+      "spikes": 28278,
+      "outputSpikes": 978,
+      "giantFiberSpikes": [
+        64,
+        26
+      ]
+    },
+    {
+      "condition": "no-transmission",
+      "simulatedSeconds": 0.2,
+      "wallSeconds": 0.022271257999999763,
+      "position": [
+        -8.79184354370469e-19,
+        1.5000741964399782,
+        -0.00013449480218193438
+      ],
+      "command": [
+        0,
+        0,
+        0
+      ],
+      "spikes": 2342,
+      "outputSpikes": 0,
+      "giantFiberSpikes": [
+        0,
+        0
+      ]
+    }
+  ],
+  "assertions": {
+    "sourceCensus": true,
+    "visualStimulusPropagates": true,
+    "visualAblationRemovesDrive": true,
+    "disconnectionRemovesDownstream": true,
+    "giantFiberLesion": true,
+    "readoutDisconnect": true
+  },
+  "passed": true,
+  "scope": "Numerical and causal integration evidence on the full traced-neuron graph; NOT physiological validation, learned fly control or a mosquito escape benchmark."
+}
