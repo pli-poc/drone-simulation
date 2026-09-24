@@ -1,0 +1,32 @@
+{
+  "schema": "mosquito-drone-lab/deployment-verification@1",
+  "commit": "b34916132459d04d5a10dd85c5c97674bc8c6d94",
+  "sourceTree": "7b2dd86b664d237059f4f2971e173bab7d51222d",
+  "version": "0.2.0",
+  "run": "36054102832",
+  "attempt": 1,
+  "deployJob": "107817375132",
+  "verifiedAt": "2026-09-24T20:21:44Z",
+  "status": "success",
+  "publicCommitMatchesTestedCommit": true,
+  "site": "https://pli-poc.github.io/drone-simulation/",
+  "biologyLab": "https://pli-poc.github.io/drone-simulation/biology.html",
+  "biologyTrainer": "https://pli-poc.github.io/drone-simulation/?insect=biological",
+  "http200VerifiedPaths": [
+    "src/workers/simulation.worker.js",
+    "docs/EXECUTION-BRIEF.md",
+    "biology.html",
+    "src/biology/worker.js",
+    "docs/BIOLOGICAL-MODEL.md"
+  ],
+  "tests": { "nodePassed": 51, "chromiumPassed": 7, "failures": 0, "browserSkipped": 0 },
+  "pullRequest": "https://github.com/pli-poc/drone-simulation/pull/4",
+  "workflow": "https://github.com/pli-poc/drone-simulation/actions/runs/36054102832",
+  "mergeMethod": "merge",
+  "preservedOriginalCommits": [
+    "9990091779acbce3aabbc5ffd485979bb90bcf50",
+    "1b7c744fab4fb2ca45ec3355396bcdfc24385c9f",
+    "b270303f6ed608974ece6a7a1fe7caeb0cc3ee87"
+  ],
+  "limitations": "Software and deployment verification only. Reduced-order fruit-fly model, not a full connectome or calibrated mosquito. Existing moving-occupant benchmark failures remain documented. No hardware or electrical activation."
+}
