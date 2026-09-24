@@ -1,0 +1,33 @@
+{
+  "schema": "mosquito-drone-lab/verification@1",
+  "commit": "083aea7a9e38ff8d6246ab88e5b5d07ea4b0b295",
+  "run": "36016275547",
+  "attempt": "1",
+  "ref": "refs/heads/feat/browser-lab",
+  "event": "push",
+  "created": "2026-09-24T14:55:53.834955+00:00",
+  "passed": true,
+  "unit": {
+    "available": true,
+    "tests": 25,
+    "failures": 0,
+    "errors": 0
+  },
+  "browser": {
+    "available": true,
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": true,
+    "failureDetails": []
+  },
+  "benchmark": {
+    "available": true,
+    "episodes": 16,
+    "wallSeconds": 0.367882135,
+    "collisions": 2,
+    "contacts": 1
+  },
+  "limitations": "Software verification only; not biological or physical safety validation."
+}
