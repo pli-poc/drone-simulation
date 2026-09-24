@@ -1,3 +1,4 @@
+import {drawFly} from '../biology/view.js';
 import {GL,Geometry,color} from './gl.js';
 import {obstacles} from '../core/world.js';
 const C={teal:color('63e5c6'),amber:color('ffbc70'),floor:color('223340'),edge:color('354b5b'),white:color('bed0da'),sofa:color('638396'),wood:color('a18768'),plant:color('498b76'),muted:color('547485',0.45),line:color('527181',0.24)};
@@ -35,7 +36,7 @@ export class SceneView{
     for(const x of [-0.145,0.145])for(const z of [-0.145,0.145]){const q=rotate([x,0,z]);g.line(p,q,C.white);g.cylinder(q,0.073,0.02,color('365869'));g.ring([q[0],q[1]+0.015,q[2]],0.081,C.teal);const a=performance.now()*0.04;g.line([q[0]+Math.cos(a)*0.066,q[1]+0.02,q[2]+Math.sin(a)*0.066],[q[0]-Math.cos(a)*0.066,q[1]+0.02,q[2]-Math.sin(a)*0.066],C.white);}
     const head=rotate([0,0,0.2]);g.ring(head,0.072,C.teal,'xy');g.line(rotate([0,0,0.11]),head,C.teal);
     g.ring([p[0],0.014,p[2]],0.25,color('63e5c6',0.28));g.line([p[0],0.018,p[2]],p,color('63e5c6',0.2));
-    const insect=s.insect.p;g.octahedron(insect,0.047,C.amber);g.ring(insect,0.12,color('ffbc70',0.6),'xz');g.line([insect[0],0.015,insect[2]],insect,color('ffbc70',0.16));
+    const insect=s.insect.p;if(s.insect.bio)drawFly(g,insect,s.insect.bio.q,s.insect.bio.act,s.insect.bio.phase,28,s.insect.bio.wingEnabled);else g.octahedron(insect,0.047,C.amber);g.ring(insect,0.12,color('ffbc70',0.6),'xz');g.line([insect[0],0.015,insect[2]],insect,color('ffbc70',0.16));
     if(this.envelope)for(const plane of ['xy','xz','yz'])g.ring(p,0.28,color('63e5c6',0.35),plane);
     if(this.trails)for(const [points,c]of [[this.droneTrail,color('63e5c6',0.65)],[this.insectTrail,color('ffbc70',0.52)]])for(let i=1;i<points.length;i++)g.line(points[i-1],points[i],c);
     if(s.track)g.line(p,s.track.p,color('ffbc70',0.32));

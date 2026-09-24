@@ -1,11 +1,12 @@
 import {clamp} from './math.js';
 export const SCENARIOS={home:'Furnished home',arena:'Open test arena',dynamic:'Moving occupant',passage:'Narrow passage'};
-export const DEFAULTS=Object.freeze({scenario:'home',seed:42,speed:1.35,range:5.5,latency:80,agility:0.65,wind:0.12,dropout:0.04,duration:24,task:'contact'});
+export const DEFAULTS=Object.freeze({scenario:'home',seed:42,speed:1.35,range:5.5,latency:80,agility:0.65,wind:0.12,dropout:0.04,duration:24,task:'contact',insectModel:'procedural',bioFrequency:218,bioMassScale:1});
 export function config(input={}){
   if(!input||typeof input!=='object')input={};const c={...DEFAULTS};
   if(Object.hasOwn(SCENARIOS,input.scenario))c.scenario=input.scenario;
+  if(['procedural','biological'].includes(input.insectModel))c.insectModel=input.insectModel;
   if(['contact','navigation'].includes(input.task))c.task=input.task;
-  for(const [key,lo,hi] of [['seed',1,2147483647],['speed',0.3,2.4],['range',0.5,8],['latency',0,500],['agility',0,1.5],['wind',0,0.6],['dropout',0,0.8],['duration',5,90]]){
+  for(const [key,lo,hi] of [['seed',1,2147483647],['speed',0.3,2.4],['range',0.5,8],['latency',0,500],['agility',0,1.5],['wind',0,0.6],['dropout',0,0.8],['duration',5,90],['bioFrequency',196,240],['bioMassScale',0.7,1.3]]){
     if(typeof input[key]==='number'&&Number.isFinite(input[key]))c[key]=clamp(input[key],lo,hi);
   }
   c.seed=Math.floor(c.seed);return c;
